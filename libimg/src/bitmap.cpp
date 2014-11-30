@@ -57,36 +57,42 @@ namespace libimg
 
 	bitmap::iterator bitmap::pixels() noexcept
 	{
-		return bitmap::const_iterator(
-			this->_pimpl->data(),
+		return bitmap::iterator(
+			this->_pimpl ? this->_pimpl->data() : nullptr,
 			this->format());
 	}
 
 	bitmap::const_iterator bitmap::pixels() const noexcept
 	{
 		return bitmap::const_iterator(
-			this->_pimpl->data(), 
+			this->_pimpl ? this->_pimpl->data() : nullptr,
 			this->format());
 	}
 
 	bitmap::pointer bitmap::raw() noexcept
 	{
+		if (this->_pimpl)
+			return this->_pimpl->data();
 		return nullptr;
 	}
 
 	bitmap::const_pointer bitmap::raw() const noexcept
 	{
+		if (this->_pimpl)
+			return this->_pimpl->data();
 		return nullptr;
 	}
 
 	bool bitmap::empty() const noexcept
 	{
-		return this->begin() == this->end();
+		return (this->begin() == this->end());
 	}
 
 	bitmap_format bitmap::format() const noexcept
 	{
-		return this->_pimpl->format();
+		if (this->_pimpl)
+			return this->_pimpl->format();
+		return bitmap_format::unknown;
 	}
 	
 	bitmap::size_type bitmap::size() const noexcept
@@ -101,17 +107,23 @@ namespace libimg
 
 	bitmap::size_type bitmap::dpi() const noexcept
 	{
-		return this->_pimpl->dpi();
+		if (this->_pimpl)
+			return this->_pimpl->dpi();
+		return 0;
 	}
 	
 	bitmap::size_type bitmap::width() const noexcept
 	{
-		return this->_pimpl->width();
+		if (this->_pimpl)
+			return this->_pimpl->width();
+		return 0;
 	}
 	
 	bitmap::size_type bitmap::height() const noexcept
 	{
-		return this->_pimpl->height();
+		if (this->_pimpl)
+			return this->_pimpl->height();
+		return 0;
 	}
 
 	void bitmap::clear(unsigned int _Color) noexcept
@@ -121,6 +133,7 @@ namespace libimg
 
 	void bitmap::assign(bitmap&& _Other)
 	{
+		if (this == &_Other) return;
 		this->_pimpl = _Other._pimpl;
 		_Other._pimpl = nullptr;
 	}
