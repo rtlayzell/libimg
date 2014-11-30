@@ -14,7 +14,7 @@ namespace libimg
 {
 	std::shared_ptr<bitmap::bitmap_impl> bitmap::_CreateBitmapImpl(std::string _Filename)
 	{
-		auto pimpl = std::make_shared<bitmap::bitmap_impl::png>();
+		auto pimpl = std::make_shared<bitmap::bitmap_impl::bmp>();
 		
 		std::ifstream ifs(_Filename, std::ios::binary);
 		if (!ifs) throw std::runtime_error("failed to open bitmap file.\n");
@@ -42,12 +42,12 @@ namespace libimg
 	}
 	
 	bitmap::bitmap(std::size_t _Width, std::size_t _Height, bitmap_format _Fmt)
-		: _pimpl(std::make_shared<bitmap_impl::png>()) // defaults to .bmp file.
+		: _pimpl(std::make_shared<bitmap_impl::bmp>()) // defaults to .bmp file.
 	{
 	}
 
 	bitmap::bitmap(std::size_t _Width, std::size_t _Height, bitmap::value_type _Color, bitmap_format _Fmt)
-		: _pimpl(std::make_shared<bitmap_impl::png>()) // defaults to .bmp file.
+		: _pimpl(std::make_shared<bitmap_impl::bmp>()) // defaults to .bmp file.
 	{
 		this->clear(_Color);
 	}
