@@ -37,6 +37,46 @@ int main(int argc, char** argv)
 	std::cout << "format: " << b.format() << std::endl;
 }
 ```
+### Writing Bitmaps
+The libraries stream manipulators `bmp`, `png`, `tif`, and `jpg` serve the purpose of specifying how to read or write a `bitmap`. By default, `bitmap` will try to deduce the file format when loading an image, and when saving a `bitmap` from scratch, the default is to produce a BMP file.
+
+The following is an example of to load an image and re-save it in a different format.
+
+```C++
+#include <iostream>
+#include <fstream>
+
+#include <bitmap.hpp>
+namespace ns = libimg;
+
+template <typename _Fn> 
+void save(std::string _Name, ns::bitmap const& _Bmp, _Fn _Manip)
+{
+	std::ofstream ofs(_Name, std::ios::binary);
+	if (!ofs)
+	{
+		std::cerr << "could not open file " << _Name << " for writing.";
+		return;
+	}
+
+	ofs << _Manip << _Bmp;
+}
+
+int main(int argc, char** argv)
+{
+	ns::bitmap img("image.png");
+
+	// convert the file to other formats by specifying 
+	// one of the provided stream manipulators.
+	// the following would convert and save any image to a png file.
+	// 
+	// ofstream << libimg::png << bitmap;
+	//
+	save("image.png", img, ns::png);
+	save("image.tif", img, ns::tif);
+	save("image.jpg", img, ns::jpg);
+}
+```
 
 ### Using Standard Algorithms to Manipulate Image Pixels.
 This sample demonstrates the stl style of the library allowing the use of std.algorithms to manipulate bitmap images.
