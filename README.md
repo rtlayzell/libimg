@@ -3,11 +3,20 @@ libimg
 
 A simple raster image loading and manipulation library.
 
-Example
+The library is designed to make it easy to read/write raster images of varying formats, and manipulate their contents through a consistent interface.
+
+## Supported Formats
+* .BMP - *(planned : [libbmp](http://code.google.com/p/libbmp/))*
+* .TIF, .TIFF - *(planned : [unknown])*
+* .PNG - *(work-in-progress : [libpng](http://www.libpng.org/pub/png/libpng.html))*
+* .JPG, .JPEG - *(planned : [unknown])*
+
+
+Examples
 =======
 (note: The current example will not build at this time, it is ment as an insight into what is to come.)
 
-# Hello world
+## Hello world
 This sample demonstrates the most basic usage of the library and how easy it is to load any bitmap in the supported formats.
 ```C++
 #include <iostream>
@@ -31,7 +40,7 @@ int main(int argc, char** argv)
 }
 ```
 
-# Using std.algorithms to Reverse Image Pixels.
+## Using std.algorithms to Reverse Image Pixels.
 This sample demonstrates the stl style of the library allowing the use of std.algorithms to manipulate bitmap images.
 ```c++
 #include <iostream>
