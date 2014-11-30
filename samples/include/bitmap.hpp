@@ -3,6 +3,10 @@
 
 #pragma once
 
+#ifdef _WIN32
+#define _SCL_SECURE_NO_WARNINGS
+#endif
+
 #include <ostream>
 #include <istream>
 #include <fstream>
@@ -16,17 +20,22 @@ namespace libimg
 
 	enum class bitmap_format : short
 	{
+		unknown = 0x0,
 		alpha = 0x01,
 		rgb = 0x02,
 		bgr = 0x04,
-		argb = alpha | rgb,
-		abgr = alpha | bgr,
+		gray = 0x08,
+		gray_alpha = (alpha | gray),
+		pallette = 0x10,
+		argb = (alpha | rgb),
+		abgr = (alpha | bgr),
 		rgba = (alpha | rgb),
 		bgra = (alpha | rgb),
 	};
 
 	enum class bitmap_bitdepth : short
 	{
+		unknown = 0,
 		bit8 = 8,
 		bit16 = 16,
 		bit24 = 24,
@@ -82,22 +91,43 @@ namespace libimg
 		bitmap_bitdepth bit_depth() const noexcept;
 		size_type dpi() const noexcept;
 		
+		/// @brief Returns the width of the bitmap in pixels.
 		size_type width() const noexcept;
+
+		/// @brief Returns the height of the bitmap in pixels.
 		size_type height() const noexcept;
 
+		/// @brief Sets all pixels of the bitmap equal the value specified.
 		void clear(unsigned int = 0x0) noexcept;
 
+		/// @brief Copies the contents of the bitmap specified.
 		void assign(bitmap&&);
+
+		/// @brief Copies the contents of the bitmap specified.
 		void assign(bitmap const&);
 		
+		/// @brief Copies the contents of the bitmap specified.
 		bitmap& operator = (bitmap&&) = default;
+
+		/// @brief Copies the contents of the bitmap specified.
 		bitmap& operator = (bitmap const&);
 
+		/// @brief Returns a bitmap iterator that points at the beginning of the bitmap's pixels.
 		iterator begin() noexcept;
+		
+		/// @brief Returns a bitmap iterator that points at the end of the bitmap's pixels.
 		iterator end() noexcept;
+
+		/// @brief Returns a const bitmap iterator that points at the beginning of the bitmap's pixels.
 		const_iterator begin() const noexcept;
+
+		/// @brief Returns a const bitmap iterator that points at the end of the bitmap's pixels.
 		const_iterator end() const noexcept;
+		
+		/// @brief Returns a const bitmap iterator that points at the beginning of the bitmap's pixels.
 		const_iterator cbegin() const noexcept;
+
+		/// @brief Returns a const bitmap iterator that points at the end of the bitmap's pixels.
 		const_iterator cend() const noexcept;
 
 		reverse_iterator rbegin() noexcept;
@@ -141,7 +171,5 @@ namespace libimg
 	inline std::basic_ostream<_Elem, _Traits>& operator << (std::basic_ostream<_Elem, _Traits>& _Os, bitmap_bitdepth _BitDepth) 
 	{ return _Os << ((short)_BitDepth); }
 }
-
-#include "bitmap_iterator.hpp"
 
 #endif /*HEADER_NS_BITMAP_HPP*/
