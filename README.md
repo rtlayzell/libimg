@@ -64,7 +64,7 @@ void save(std::string _Name, ns::bitmap const& _Bmp, _Fn _Manip)
 
 int main(int argc, char** argv)
 {
-	ns::bitmap img("image.png");
+	ns::bitmap img("image.bmp");
 
 	// convert the file to other formats by specifying 
 	// one of the provided stream manipulators.
