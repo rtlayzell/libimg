@@ -104,6 +104,8 @@ xcopy "$(ProjectDir)include\bitmap*.hpp" "$(OutDir)" /q /d /y</Command>
     <ClInclude Include="include\impl\jpg_bitmap_impl.hpp" />
     <ClInclude Include="include\impl\png_bitmap_impl.hpp" />
     <ClInclude Include="include\impl\tif_bitmap_impl.hpp" />
+    <ClInclude Include="include\libbmp\bmp.h" />
+    <ClInclude Include="include\libbmp\bmpfile.h" />
     <ClInclude Include="include\stdafx.h" />
     <ClInclude Include="include\targetver.h" />
   </ItemGroup>
@@ -112,6 +114,21 @@ xcopy "$(ProjectDir)include\bitmap*.hpp" "$(OutDir)" /q /d /y</Command>
     <ClInclude Include="include\bitmap_iterator.hpp" />
     <ClCompile Include="src\bitmap_iterator.cpp" />
     <ClCompile Include="src\bitmap_iostream.cpp" />
+    <ClCompile Include="src\libbmp\bmp.c">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeaderOutputFile>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Default</CompileAs>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <None Include="src\libbmp\bmpfile.cpp" />
+    <ClCompile Include="src\pixel.cpp" />
     <ClCompile Include="src\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
