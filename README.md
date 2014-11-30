@@ -1,7 +1,7 @@
 libimg
 ======
 
-A simple raster image loading and manipulation library.
+A simple modern C++ raster image library.
 
 The library is designed to make it easy to read/write raster images of varying formats, and manipulate their contents through a consistent interface.
 
