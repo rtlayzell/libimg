@@ -6,10 +6,16 @@ A simple modern C++ raster image library.
 The library is designed to make it easy to read/write raster images of varying formats, and manipulate their contents through a consistent singular interface.
 
 ## Supported Formats
-* BMP - *(planned : [libbmp](http://code.google.com/p/libbmp/))*
-* PNG - *(work-in-progress : [libpng](http://www.libpng.org/pub/png/libpng.html))*
-* TIF, TIFF - *(planned : [LibTIFF](http://www.remotesensing.org/libtiff/))*
-* JPG, JPEG - *(planned : [libjpeg](http://libjpeg.sourceforge.net/))*
+* BMP - (*in-progress : heavily modified [libbmp](http://code.google.com/p/libbmp/)*)
+ * Reading (working)
+ * Writing (planned)
+ * Manipulation (in-progress)
+* PNG - (*in-progress : [libpng](http://www.libpng.org/pub/png/libpng.html)*)
+ * Reading (working)
+ * Writing (planned)
+ * Manipulation (in-progress)
+* TIF, TIFF - (*planned : [LibTIFF](http://www.remotesensing.org/libtiff/)*)
+* JPG, JPEG - (*planned : [libjpeg](http://libjpeg.sourceforge.net/)*)
 
 # Examples
 (note: The current example will not build at this time, it is ment as an insight into what is to come.)
