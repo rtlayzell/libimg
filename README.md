@@ -5,11 +5,13 @@ A simple modern C++ raster image library.
 
 The library is designed to make it easy to read/write raster images of varying formats, and manipulate their contents through a consistent interface.
 
+The library once built, consists of a single header file ```bitmap.hpp``` and a static library ```libimg.lib```
+
 ## Supported Formats
-* .BMP - *(planned : [libbmp](http://code.google.com/p/libbmp/))*
-* .TIF, .TIFF - *(planned : [unknown])*
-* .PNG - *(work-in-progress : [libpng](http://www.libpng.org/pub/png/libpng.html))*
-* .JPG, .JPEG - *(planned : [unknown])*
+* BMP - *(planned : [libbmp](http://code.google.com/p/libbmp/))*
+* PNG - *(work-in-progress : [libpng](http://www.libpng.org/pub/png/libpng.html))*
+* TIF, TIFF - *(planned : [unknown])*
+* JPG, JPEG - *(planned : [unknown])*
 
 
 Examples
