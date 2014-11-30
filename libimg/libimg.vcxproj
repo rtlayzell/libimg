@@ -66,8 +66,8 @@
       <AdditionalDependencies>libpng16-d.lib;zlib-d.lib</AdditionalDependencies>
     </Lib>
     <PostBuildEvent>
-      <Command>copy "$(ProjectDir)include\bitmap_*.hpp" "$(SolutionDir)samples\include\"
-copy "$(ProjectDir)include\bitmap_*.hpp" "$(OutDir)"</Command>
+      <Command>copy "$(ProjectDir)include\bitmap*.hpp" "$(SolutionDir)samples\include\"
+copy "$(ProjectDir)include\bitmap*.hpp" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -93,8 +93,8 @@ copy "$(ProjectDir)include\bitmap_*.hpp" "$(OutDir)"</Command>
       <AdditionalDependencies>libpng16.lib;zlib.lib</AdditionalDependencies>
     </Lib>
     <PostBuildEvent>
-      <Command>copy "$(ProjectDir)include\bitmap_*.hpp" "$(SolutionDir)samples\include\"
-copy "$(ProjectDir)include\bitmap_*.hpp" "$(OutDir)"</Command>
+      <Command>copy "$(ProjectDir)include\bitmap*.hpp" "$(SolutionDir)samples\include\"
+copy "$(ProjectDir)include\bitmap*.hpp" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
