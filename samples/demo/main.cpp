@@ -1,14 +1,11 @@
 #include <iostream>
-#include <bitmap.hpp>
+#include <fstream>
 
+#include <bitmap.hpp>
 namespace ns = libimg;
 
-int main(int, char**)
+int main(int argc, char** argv)
 {
-	libimg::bitmap b("image.png");
-	auto fmt = b.format();
-
-	b.
-
-	return 0;
+	ns::bitmap img("bigimage.png");
+	img.write(std::cout << ns::png);
 }
