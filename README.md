@@ -8,8 +8,8 @@ The library is designed to make it easy to read/write raster images of varying f
 ## Supported Formats
 * BMP - *(planned : [libbmp](http://code.google.com/p/libbmp/))*
 * PNG - *(work-in-progress : [libpng](http://www.libpng.org/pub/png/libpng.html))*
-* TIF, TIFF - *(planned : [unknown])*
-* JPG, JPEG - *(planned : [unknown])*
+* TIF, TIFF - *(planned : [LibTIFF](http://www.remotesensing.org/libtiff/))*
+* JPG, JPEG - *(planned : [libjpeg](http://libjpeg.sourceforge.net/))*
 
 # Examples
 (note: The current example will not build at this time, it is ment as an insight into what is to come.)
