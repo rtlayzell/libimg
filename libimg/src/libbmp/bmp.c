@@ -5,6 +5,10 @@
 
 #include "..\..\include\libbmp\bmp.h"
 
+#define DEFAULT_DPI_X 3780
+#define DEFAULT_DPI_Y 3780
+#define DPI_FACTOR 39.37007874015748
+
 static void bmp_malloc_colors(bmp_structp bmp);
 static void bmp_malloc_pixels(bmp_structp bmp);
 static void bmp_free_colors(bmp_structp bmp);
@@ -141,23 +145,30 @@ uint32_t bmp_get_height(bmp_structp bmp)
 	return bmp->dib.height;
 }
 
+uint16_t bmp_get_depth(bmp_structp bmp)
+{
+	return bmp->dib.depth;
+}
+
 uint32_t bmp_get_dpi(bmp_structp bmp)
 {
-	return 0;
+	// ?? are the hres and vres always the same? probably not..
+	return bmp_get_dpi_x(bmp);
 }
 
 uint32_t bmp_get_dpi_x(bmp_structp bmp)
 {
-	return 0;
+	return (uint32_t)round(bmp->dib.hres / DPI_FACTOR);
 }
 
 uint32_t bmp_get_dpi_y(bmp_structp bmp)
 {
-	return 0;
+	return (uint32_t)round(bmp->dib.vres / DPI_FACTOR);
 }
 
+
 void
-bmp_read_header_info(bmp_structp bmp)
+bmp_read_header(bmp_structp bmp)
 {
 	bmp->read_fn(bmp, (uint8_t*)&bmp->header.magic, sizeof(uint8_t) * 2);
 	bmp->read_fn(bmp, (uint8_t*)&bmp->header.filesz, sizeof(uint32_t));
@@ -201,7 +212,8 @@ bmp_read_palette(bmp_structp bmp)
 			sizeof(rgb_pixel_t) * bmp->dib.ncolors);
 	}
 	else if (bmp->dib.depth == 16) 
-	{ /* the bit masks, not palette */
+	{ 
+		/* the bit masks, not palette */
 		uint16_t red_mask = 63488;  /* bits 1-5 */
 		uint16_t green_mask = 2016; /* bits 6-11 */
 		uint16_t blue_mask = 31;    /* bits 12-16 */

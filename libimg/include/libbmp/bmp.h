@@ -109,11 +109,12 @@ void* bmp_get_io_ptr(bmp_structp bmp);
 uint32_t bmp_get_width(bmp_structp bmp);
 uint32_t bmp_get_height(bmp_structp bmp);
 
+uint16_t bmp_get_depth(bmp_structp bmp);
 uint32_t bmp_get_dpi(bmp_structp bmp);
 uint32_t bmp_get_dpi_x(bmp_structp bmp);
 uint32_t bmp_get_dpi_y(bmp_structp bmp);
 
-void bmp_read_header_info(bmp_structp bmp);
+void bmp_read_header(bmp_structp bmp);
 void bmp_read_dib(bmp_structp bmp);
 void bmp_read_palette(bmp_structp bmp);
 
