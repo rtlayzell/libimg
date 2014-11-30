@@ -3,17 +3,21 @@
 
 #pragma once
 
+#ifdef _WIN32
+#define _SCL_SECURE_NO_WARNINGS
+#endif
+
 #include <ostream>
 #include <istream>
 #include <fstream>
 #include <string>
 #include <memory>
 
+#include "bitmap_iterator.hpp"
+
+
 namespace libimg
 {
-	// forward declaration.
-	class bitmap_iterator;
-
 	enum class bitmap_format : short
 	{
 		unknown = 0x00,
@@ -146,7 +150,5 @@ namespace libimg
 	inline std::basic_ostream<_Elem, _Traits>& operator << (std::basic_ostream<_Elem, _Traits>& _Os, bitmap_bitdepth _BitDepth) 
 	{ return _Os << ((short)_BitDepth); }
 }
-
-#include "bitmap_iterator.hpp"
 
 #endif /*HEADER_NS_BITMAP_HPP*/
