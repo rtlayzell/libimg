@@ -51,15 +51,15 @@ namespace libimg
 	{
 		this->clear(_Color);
 	}
-
-	bitmap::reference bitmap::operator()(std::size_t _X, std::size_t _Y) noexcept
+	
+	bitmap::iterator bitmap::operator [](std::size_t _Row) noexcept
 	{
-		return *(this->pixels() + _Y * this->width() + _X);
+		return (this->pixels() + _Row * this->width());
 	}
-
-	bitmap::const_reference bitmap::operator()(std::size_t _X, std::size_t _Y) const noexcept
+	
+	bitmap::const_iterator bitmap::operator [](std::size_t _Row) const noexcept
 	{
-		return *(this->pixels() + _Y * this->width() + _X);
+		return (this->pixels() + _Row * this->width());
 	}
 
 	bitmap::iterator bitmap::pixels() noexcept
@@ -107,12 +107,26 @@ namespace libimg
 		return 0;
 	}
 
-	bitmap_bitdepth bitmap::bit_depth() const noexcept
+	bitmap_bitdepth bitmap::depth() const noexcept
 	{
 		return bitmap_bitdepth::bit32;
 	}
 
 	bitmap::size_type bitmap::dpi() const noexcept
+	{
+		if (this->_pimpl)
+			return this->_pimpl->dpi();
+		return 0;
+	}
+
+	bitmap::size_type bitmap::xdpi() const noexcept
+	{
+		if (this->_pimpl)
+			return this->_pimpl->dpi();
+		return 0;
+	}
+	
+	bitmap::size_type bitmap::ydpi() const noexcept
 	{
 		if (this->_pimpl)
 			return this->_pimpl->dpi();

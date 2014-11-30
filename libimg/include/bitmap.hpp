@@ -81,11 +81,11 @@ namespace libimg
 		bitmap(std::size_t _Width, std::size_t _Height, bitmap_format _Fmt = bitmap_format::argb);
 		bitmap(std::size_t _Width, std::size_t _Height, value_type _Color, bitmap_format _Fmt = bitmap_format::argb);
 
-		reference operator()(std::size_t _X, std::size_t _Y) noexcept;
-		const_reference operator()(std::size_t _X, std::size_t _Y) const noexcept;
+		iterator operator [](std::size_t _Row) noexcept;
+		const_iterator operator [](std::size_t _Row) const noexcept;
 
-		void set_pixel(std::size_t _X, std::size_t _Y, unsigned int _Color);
-		unsigned int get_pixel(std::size_t _X, std::size_t _Y) const;
+		bitmap& operator = (bitmap&&) = default;
+		bitmap& operator = (bitmap const&);
 
 		iterator pixels() noexcept;
 		const_iterator pixels() const noexcept;
@@ -97,9 +97,11 @@ namespace libimg
 		bitmap_format format() const noexcept;
 		size_type size() const noexcept;
 		
-		bitmap_bitdepth bit_depth() const noexcept;
+		bitmap_bitdepth depth() const noexcept;
 		size_type dpi() const noexcept;
-		
+		size_type xdpi() const noexcept;
+		size_type ydpi() const noexcept;
+
 		size_type width() const noexcept;
 		size_type height() const noexcept;
 
@@ -107,9 +109,6 @@ namespace libimg
 
 		void assign(bitmap&&);
 		void assign(bitmap const&);
-		
-		bitmap& operator = (bitmap&&) = default;
-		bitmap& operator = (bitmap const&);
 
 		iterator begin() noexcept;
 		iterator end() noexcept;
