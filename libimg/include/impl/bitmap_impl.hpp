@@ -20,8 +20,9 @@ namespace libimg
 		virtual bitmap::pointer data() noexcept = 0;
 		virtual bitmap::const_pointer data() const noexcept = 0;
 
-		virtual bitmap_format format() const noexcept = 0;
-		virtual std::size_t dpi() const noexcept = 0;
+		virtual pixel_format format() const noexcept = 0;
+		virtual std::size_t xdpi() const noexcept = 0;
+		virtual std::size_t ydpi() const noexcept = 0;
 		virtual std::size_t width() const noexcept = 0;
 		virtual std::size_t height() const noexcept = 0;
 	};

@@ -8,13 +8,13 @@
 
 namespace libimg
 {
-	static void _IStreamReadData(png_structp pngPtr, png_bytep data, png_size_t length)
+	static void _IStreamReadPNGData(png_structp pngPtr, png_bytep data, png_size_t length)
 	{
 		png_voidp a = png_get_io_ptr(pngPtr);
 		((std::istream*)a)->read((char*)data, length);
 	}
 
-	static void _OStreamWriteData( )
+	static void _OStreamWritePNGData( )
 	{
 		// stub..
 	}
@@ -49,15 +49,16 @@ namespace libimg
 			if (!_Validate(_Is))
 				throw std::invalid_argument("input is not valid PNG data.");
 
+			
 			png_structp pngPtr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
 			if (pngPtr == NULL)
-				throw std::runtime_error("could not initialize png.");
+				throw std::runtime_error("could not initialize PNG.");
 
 			png_infop infoPtr = png_create_info_struct(pngPtr);
 			if (!infoPtr)
 			{
 				png_destroy_read_struct(&pngPtr, (png_infopp)0, (png_infopp)0);
-				throw std::runtime_error("could not initialize png.");
+				throw std::runtime_error("could not initialize PNG.");
 			}
 
 			png_bytep* rowPtrs = NULL;
@@ -72,38 +73,54 @@ namespace libimg
 				throw std::runtime_error("an error occured while reading PNG data.");
 			}
 
-			png_set_read_fn(pngPtr, (png_voidp)&_Is, _IStreamReadData);
+			png_set_read_fn(pngPtr, (png_voidp)&_Is, _IStreamReadPNGData);
 			png_set_sig_bytes(pngPtr, PNGSIGSIZE);
 			png_read_info(pngPtr, infoPtr);
-
+			
 			this->_pngPtr = pngPtr;
 			this->_infoPtr = infoPtr;
 		}
 
 		void save(std::ostream& _Os) override
 		{
-			_OStreamWriteData();
+			_OStreamWritePNGData();
 		}
 
-		bitmap_format format() const noexcept override
+		bitmap::pointer data() noexcept override
+		{
+			return bitmap::pointer();
+		}
+
+		bitmap::const_pointer data() const noexcept override
+		{
+			return bitmap::const_pointer();
+		}
+
+		pixel_format format() const noexcept override
 		{
 			png_byte color_type = png_get_color_type(this->_pngPtr, this->_infoPtr);
-			switch (color_type)
+			/*switch (color_type)
 			{
-			case PNG_COLOR_TYPE_PALETTE: return bitmap_format::pallette;
-			case PNG_COLOR_TYPE_GRAY: return bitmap_format::gray;
-			case PNG_COLOR_TYPE_GRAY_ALPHA: return (bitmap_format::gray_alpha);
-			case PNG_COLOR_TYPE_RGB: return bitmap_format::rgb;
-			case PNG_COLOR_TYPE_RGBA: return bitmap_format::rgba; 
-			}
+			case PNG_COLOR_TYPE_PALETTE: return pixel_format::pallette;
+			case PNG_COLOR_TYPE_GRAY: return pixel_format::gray;
+			case PNG_COLOR_TYPE_GRAY_ALPHA: return (pixel_format::gray_alpha);
+			case PNG_COLOR_TYPE_RGB: return pixel_format::rgb;
+			case PNG_COLOR_TYPE_RGBA: return pixel_format::rgba;
+			}*/
 
-			return (bitmap_format)0;
+			return pixel_format::undefined;
 		}
 
-		bitmap::size_type dpi() const noexcept override
+		std::size_t xdpi() const noexcept override
 		{
 			return static_cast<bitmap::size_type>(
-				png_get_pixels_per_inch(this->_pngPtr, this->_infoPtr));
+				png_get_x_pixels_per_inch(this->_pngPtr, this->_infoPtr));
+		}
+
+		std::size_t ydpi() const noexcept override
+		{
+			return static_cast<bitmap::size_type>(
+				png_get_y_pixels_per_inch(this->_pngPtr, this->_infoPtr));
 		}
 
 		bitmap::size_type width() const noexcept override
@@ -116,16 +133,6 @@ namespace libimg
 		{
 			return static_cast<bitmap::size_type>(
 				png_get_image_height(this->_pngPtr, this->_infoPtr));
-		}
-
-		bitmap::pointer data() noexcept override
-		{
-			return bitmap::pointer();
-		}
-		
-		bitmap::const_pointer data() const noexcept override
-		{
-			return bitmap::const_pointer();
 		}
 	};
 }
