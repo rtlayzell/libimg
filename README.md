@@ -14,7 +14,7 @@ The library is designed to make it easy to read/write raster images of varying f
 # Examples
 (note: The current example will not build at this time, it is ment as an insight into what is to come.)
 
-### Hello world
+### Reading Bitmaps
 This sample demonstrates the most basic usage of the library and how easy it is to load any bitmap in the supported formats.
 ```C++
 #include <iostream>
@@ -29,7 +29,7 @@ int main(int argc, char** argv)
 	// load the image into a bitmap.
 	ns::bitmap b(fname);
 
-  // print some properties of the image.
+	// print some properties of the image.
 	std::cout << "loaded image: " << fname << std::endl;
 	std::cout << "resolution: " << b.width() << " x " << b.height() << std::endl;
 
@@ -40,7 +40,7 @@ int main(int argc, char** argv)
 ### Writing Bitmaps
 The libraries stream manipulators `bmp`, `png`, `tif`, and `jpg` serve the purpose of specifying how to read or write a `bitmap`. By default, `bitmap` will try to deduce the file format when loading an image, and when saving a `bitmap` from scratch, the default is to produce a BMP file.
 
-The following is an example of to load an image and re-save it in a different format.
+The following is an example of how to load an image and re-save it in a different format.
 
 ```C++
 #include <iostream>
