@@ -16,6 +16,7 @@ namespace libimg
 
 	enum class bitmap_format : short
 	{
+		unknown = 0x00,
 		alpha = 0x01,
 		rgb = 0x02,
 		bgr = 0x04,
@@ -30,6 +31,7 @@ namespace libimg
 
 	enum class bitmap_bitdepth : short
 	{
+		unknown = 0,
 		bit8 = 8,
 		bit16 = 16,
 		bit24 = 24,
