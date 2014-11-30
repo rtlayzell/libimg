@@ -8,13 +8,13 @@
 
 namespace libimg
 {
-	void _IStreamReadData(png_structp pngPtr, png_bytep data, png_size_t length)
+	static void _IStreamReadData(png_structp pngPtr, png_bytep data, png_size_t length)
 	{
 		png_voidp a = png_get_io_ptr(pngPtr);
 		((std::istream*)a)->read((char*)data, length);
 	}
 
-	void _OStreamReadData()
+	static void _OStreamWriteData( )
 	{
 		// stub..
 	}
@@ -80,8 +80,9 @@ namespace libimg
 			this->_infoPtr = infoPtr;
 		}
 
-		void save(std::ostream&) override
+		void save(std::ostream& _Os) override
 		{
+			_OStreamWriteData();
 		}
 
 		bitmap_format format() const noexcept override
