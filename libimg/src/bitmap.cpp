@@ -1,4 +1,6 @@
 #include <stdafx.h>
+#include <algorithm>
+#include <locale>
 
 #include "bitmap.hpp"
 #include "bitmap_iterator.hpp"
@@ -9,22 +11,10 @@
 #include "impl\jpg_bitmap_impl.hpp"
 #include "impl\tif_bitmap_impl.hpp"
 
+static std::string _GetPathExtension(std::string _Filename);
 
 namespace libimg
 {
-	std::shared_ptr<bitmap::bitmap_impl> bitmap::_CreateBitmapImpl(std::string _Filename)
-	{
-		auto pimpl = std::make_shared<bitmap::bitmap_impl::bmp>();
-		
-		std::ifstream ifs(_Filename, std::ios::binary);
-		if (!ifs) throw std::runtime_error("failed to open bitmap file.\n");
-
-		pimpl->load(ifs);
-		ifs.close();
-
-		return pimpl;
-	}
-
 	bitmap::bitmap(bitmap const&) : _pimpl()
 	{
 	}
@@ -32,7 +22,7 @@ namespace libimg
 	bitmap::bitmap(std::istream& _Is) : _pimpl()
 	{
 		if (!_Is) throw std::runtime_error("invalid istream object.\n");
-		this->_pimpl = std::make_shared<bitmap::bitmap_impl::png>();
+		this->_pimpl = std::make_shared<bitmap::bitmap_impl::bmp>();
 		this->_pimpl->load(_Is);
 	}
 
@@ -41,12 +31,12 @@ namespace libimg
 	{
 	}
 	
-	bitmap::bitmap(std::size_t _Width, std::size_t _Height, bitmap_format _Fmt)
+	bitmap::bitmap(std::size_t _Width, std::size_t _Height, pixel_format _Fmt)
 		: _pimpl(std::make_shared<bitmap_impl::bmp>()) // defaults to .bmp file.
 	{
 	}
 
-	bitmap::bitmap(std::size_t _Width, std::size_t _Height, bitmap::value_type _Color, bitmap_format _Fmt)
+	bitmap::bitmap(std::size_t _Width, std::size_t _Height, bitmap::value_type _Color, pixel_format _Fmt)
 		: _pimpl(std::make_shared<bitmap_impl::bmp>()) // defaults to .bmp file.
 	{
 		this->clear(_Color);
@@ -95,11 +85,11 @@ namespace libimg
 		return (this->begin() == this->end());
 	}
 
-	bitmap_format bitmap::format() const noexcept
+	pixel_format bitmap::format() const noexcept
 	{
 		if (this->_pimpl)
 			return this->_pimpl->format();
-		return bitmap_format::unknown;
+		return pixel_format::undefined;
 	}
 	
 	bitmap::size_type bitmap::size() const noexcept
@@ -107,29 +97,29 @@ namespace libimg
 		return 0;
 	}
 
-	bitmap_bitdepth bitmap::depth() const noexcept
+	pixel_format bitmap::depth() const noexcept
 	{
-		return bitmap_bitdepth::bit32;
+		return pixel_format::bpp24;
 	}
 
 	bitmap::size_type bitmap::dpi() const noexcept
 	{
 		if (this->_pimpl)
-			return this->_pimpl->dpi();
+			return this->_pimpl->xdpi();
 		return 0;
 	}
 
 	bitmap::size_type bitmap::xdpi() const noexcept
 	{
 		if (this->_pimpl)
-			return this->_pimpl->dpi();
+			return this->_pimpl->xdpi();
 		return 0;
 	}
 	
 	bitmap::size_type bitmap::ydpi() const noexcept
 	{
 		if (this->_pimpl)
-			return this->_pimpl->dpi();
+			return this->_pimpl->ydpi();
 		return 0;
 	}
 	
@@ -302,4 +292,43 @@ namespace libimg
 		return !(_Right == _Left);
 	}
 
+	std::shared_ptr<bitmap::bitmap_impl> bitmap::_CreateBitmapImpl(std::string _Filename)
+	{
+		auto ext = _GetPathExtension(_Filename);
+		std::shared_ptr<bitmap::bitmap_impl> pimpl = nullptr;
+
+		std::transform(std::begin(ext), std::end(ext), std::begin(ext), tolower);
+		if (ext == ".bmp") pimpl = std::make_shared<bitmap::bitmap_impl::bmp>();
+		else if (ext == ".png") pimpl = std::make_shared<bitmap::bitmap_impl::png>();
+		//else if (ext == ".jpg" || ext == ".jpeg") pimpl = std::make_shared<bitmap::bitmap_impl::jpg>();
+		//else if (ext == ".tif" || ext == ".tiff") pimpl = std::make_shared<bitmap::bitmap_impl::tif>();
+		else return nullptr;
+
+		std::ifstream ifs(_Filename, std::ios::binary);
+		if (!ifs) throw std::runtime_error("failed to open bitmap file.\n");
+
+		pimpl->load(ifs);
+		ifs.close();
+
+		return pimpl;
+	}
+}
+
+std::string _GetPathExtension(std::string _Filename)
+{
+	auto first = std::rbegin(_Filename);
+	auto last = std::rend(_Filename);
+	auto curr = first;
+
+	for (; curr != last; ++curr)
+	{
+		if (*curr == '.')
+			return std::string((curr + 1).base(), first.base());
+
+		// _Filename does not specify an extension.
+		if (*curr == '\\' || *curr == ':')
+			break;
+	}
+
+	return std::string();
 }
