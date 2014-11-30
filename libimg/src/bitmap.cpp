@@ -25,8 +25,15 @@ namespace libimg
 		return pimpl;
 	}
 
-	bitmap::bitmap(bitmap const&)
+	bitmap::bitmap(bitmap const&) : _pimpl()
 	{
+	}
+
+	bitmap::bitmap(std::istream& _Is) : _pimpl()
+	{
+		if (!_Is) throw std::runtime_error("invalid istream object.\n");
+		this->_pimpl = std::make_shared<bitmap::bitmap_impl::png>();
+		this->_pimpl->load(_Is);
 	}
 
 	bitmap::bitmap(std::string _Filename)
@@ -218,6 +225,35 @@ namespace libimg
 		this->_pimpl.swap(_Other._pimpl);
 	}
 
+	void bitmap::read(std::string _Filename)
+	{
+		std::ifstream ifs(_Filename, std::ios::in | std::ios::binary);
+		if (!ifs) throw 10;
+
+		this->read(ifs);
+		ifs.close();
+	}
+
+	void bitmap::write(std::string _Filename)
+	{
+		std::ofstream ofs(_Filename, std::ios::out | std::ios::binary);
+		if (!ofs) throw 20;
+		
+		this->write(ofs);
+		ofs.flush();
+		ofs.close();
+	}
+
+	void bitmap::read(std::istream& _Is)
+	{
+		_Is >> *this;
+	}
+
+	void bitmap::write(std::ostream& _Os)
+	{
+		_Os << *this;
+	}
+
 	bool operator == (bitmap const& _Left, bitmap const& _Right)
 	{
 		return _Left.format() == _Right.format()
@@ -252,15 +288,4 @@ namespace libimg
 		return !(_Right == _Left);
 	}
 
-	std::ostream& operator << (std::ostream& _Os, bitmap const& _Bitmap)
-	{
-		_Bitmap._pimpl->save(_Os);
-		return _Os;
-	}
-
-	std::istream& operator << (std::istream& _Is, bitmap& _Bitmap)
-	{
-		_Bitmap._pimpl->load(_Is);
-		return _Is;
-	}
 }

@@ -18,6 +18,14 @@
 
 namespace libimg
 {
+	// forward declare ostream manipulators for writing
+	// the various types of image formats supported by libimg.
+
+	std::ostream& bmp(std::ostream& _Os);
+	std::ostream& png(std::ostream& _Os);
+	std::ostream& jpg(std::ostream& _Os);
+	std::ostream& tif(std::ostream& _Os);
+
 	enum class bitmap_format : short
 	{
 		unknown = 0x00,
@@ -68,9 +76,10 @@ namespace libimg
 		bitmap(bitmap&&) = default;
 		bitmap(bitmap const&);
 
+		explicit bitmap(std::istream& _Is);
 		explicit bitmap(std::string _Filename);
 		bitmap(std::size_t _Width, std::size_t _Height, bitmap_format _Fmt = bitmap_format::argb);
-		bitmap(std::size_t _Width, std::size_t _Height, value_type _Color = 0x0, bitmap_format _Fmt = bitmap_format::argb);
+		bitmap(std::size_t _Width, std::size_t _Height, value_type _Color, bitmap_format _Fmt = bitmap_format::argb);
 
 		reference operator()(std::size_t _X, std::size_t _Y) noexcept;
 		const_reference operator()(std::size_t _X, std::size_t _Y) const noexcept;
@@ -118,8 +127,14 @@ namespace libimg
 
 		void swap(bitmap&);
 
+		void read(std::string);
+		void write(std::string);
+
+		void read(std::istream&);
+		void write(std::ostream&);
+
 		friend std::ostream& operator << (std::ostream& _Os, bitmap const& _Bitmap);
-		friend std::istream& operator << (std::istream& _Is, bitmap& _Bitmap);
+		friend std::istream& operator >> (std::istream& _Is, bitmap& _Bitmap);
 	};
 
 	bool operator == (bitmap_iterator const& _Left, bitmap_iterator const& _Right);
@@ -144,7 +159,7 @@ namespace libimg
 	bool operator != (::std::nullptr_t const, bitmap const& _Right);
 
 	std::ostream& operator << (std::ostream& _Os, bitmap const& _Bitmap);
-	std::istream& operator << (std::istream& _Is, bitmap& _Bitmap);
+	std::istream& operator >> (std::istream& _Is, bitmap& _Bitmap);
 
 	template <typename _Elem, typename _Traits>
 	inline std::basic_ostream<_Elem, _Traits>& operator << (std::basic_ostream<_Elem, _Traits>& _Os, bitmap_bitdepth _BitDepth) 
