@@ -48,7 +48,7 @@ namespace libimg
 		{
 			if (!_Validate(_Is))
 				throw std::invalid_argument("input is not valid PNG data.");
-
+			
 			
 			png_structp pngPtr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
 			if (pngPtr == NULL)

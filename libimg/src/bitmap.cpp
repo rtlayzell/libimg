@@ -17,6 +17,7 @@ namespace libimg
 {
 	bitmap::bitmap(bitmap const&) : _pimpl()
 	{
+		this->_pimpl = std::make_shared<bitmap::bitmap_impl::bmp>();
 	}
 
 	bitmap::bitmap(std::istream& _Is) : _pimpl()
@@ -30,10 +31,11 @@ namespace libimg
 		: _pimpl(bitmap::_CreateBitmapImpl(_Filename))
 	{
 	}
-	
+
 	bitmap::bitmap(std::size_t _Width, std::size_t _Height, pixel_format _Fmt)
-		: _pimpl(std::make_shared<bitmap_impl::bmp>()) // defaults to .bmp file.
+		: bitmap::bitmap(_Width, _Height, 0xFF000000, _Fmt)
 	{
+
 	}
 
 	bitmap::bitmap(std::size_t _Width, std::size_t _Height, bitmap::value_type _Color, pixel_format _Fmt)
@@ -41,12 +43,12 @@ namespace libimg
 	{
 		this->clear(_Color);
 	}
-	
+
 	bitmap::iterator bitmap::operator [](std::size_t _Row) noexcept
 	{
 		return (this->pixels() + _Row * this->width());
 	}
-	
+
 	bitmap::const_iterator bitmap::operator [](std::size_t _Row) const noexcept
 	{
 		return (this->pixels() + _Row * this->width());
@@ -85,21 +87,26 @@ namespace libimg
 		return (this->begin() == this->end());
 	}
 
-	pixel_format bitmap::format() const noexcept
-	{
-		if (this->_pimpl)
-			return this->_pimpl->format();
-		return pixel_format::undefined;
-	}
-	
 	bitmap::size_type bitmap::size() const noexcept
 	{
 		return 0;
 	}
 
-	pixel_format bitmap::depth() const noexcept
+	unsigned short bitmap::depth() const noexcept
 	{
-		return pixel_format::bpp24;
+		return libimg::bpp(this->format());
+	}
+
+	unsigned short bitmap::channels() const noexcept
+	{
+		return libimg::channels(this->format());
+	}
+
+	pixel_format bitmap::format() const noexcept
+	{
+		if (this->_pimpl)
+			return this->_pimpl->format();
+		return pixel_format::undefined;
 	}
 
 	bitmap::size_type bitmap::dpi() const noexcept
@@ -115,21 +122,21 @@ namespace libimg
 			return this->_pimpl->xdpi();
 		return 0;
 	}
-	
+
 	bitmap::size_type bitmap::ydpi() const noexcept
 	{
 		if (this->_pimpl)
 			return this->_pimpl->ydpi();
 		return 0;
 	}
-	
+
 	bitmap::size_type bitmap::width() const noexcept
 	{
 		if (this->_pimpl)
 			return this->_pimpl->width();
 		return 0;
 	}
-	
+
 	bitmap::size_type bitmap::height() const noexcept
 	{
 		if (this->_pimpl)
@@ -140,6 +147,11 @@ namespace libimg
 	void bitmap::clear(unsigned int _Color) noexcept
 	{
 		std::fill(this->begin(), this->end(), _Color);
+	}
+
+	void bitmap::resize(std::size_t _Width, std::size_t _Height)
+	{
+
 	}
 
 	void bitmap::assign(bitmap&& _Other)

@@ -117,6 +117,12 @@ uint32_t bmp_get_dpi_y(bmp_structp bmp);
 void bmp_read_header(bmp_structp bmp);
 void bmp_read_dib(bmp_structp bmp);
 void bmp_read_palette(bmp_structp bmp);
+void bmp_read_pixels(bmp_structp bmp);
+
+void bmp_write_header(bmp_structp bmp);
+void bmp_write_dib(bmp_structp bmp);
+void bmp_write_palette(bmp_structp bmp);
+void bmp_write_pixels(bmp_structp bmp);
 
 BMP_END_DECLS
 

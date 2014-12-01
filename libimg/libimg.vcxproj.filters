@@ -42,10 +42,10 @@
     <ClInclude Include="include\bitmap_iterator.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\libbmp\bmpfile.h">
+    <ClInclude Include="include\libbmp\bmp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\libbmp\bmp.h">
+    <ClInclude Include="include\libbmp\bmpdef.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -68,10 +68,14 @@
     <ClCompile Include="src\pixel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="src\libbmp\bmpfile.cpp">
+    <ClCompile Include="src\libbmp\bmp_write.c">
       <Filter>Source Files</Filter>
-    </None>
+    </ClCompile>
+    <ClCompile Include="src\libbmp\bmp_read.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pixel_format.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

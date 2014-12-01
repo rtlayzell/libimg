@@ -28,37 +28,39 @@ namespace libimg
 
 	enum class pixel_format : unsigned int
 	{
-		// bits-per-pixel format flags.
-		undefined = 0,		// ----  | 0x00
-		bpp1 = 1,			// 1bpp  | 0x01
-		bpp2 = 2,			// 2bpp  | 0x02
-		bpp4 = 4,			// 4bpp  | 0x04
-		bpp8 = 8,			// 8bpp  | 0x08
-		bpp16 = 16,			// 16bpp | 0x10
-		bpp24 = 24,			// 24bpp | 0x20
-		bpp32 = 32,			// 32bpp | 0x30
+		undefined = 0x0000,	// ----  | 0x00
 
-		// channel format flags
-		rgb = 0x0100,
-		rgba = 0x0200,
-		grayscale = 0x1000, // single channel representing gray/black/white.
-		indexed = 0x2000, // single channel representing an index into a palette.
+		// bits-per-pixel format flags in lo-dword
+		// lo-word represents bpp identifier
+		// hi-word represents number of bits.
+		bpp1 = 0x0101,		// 1bpp  | 0x01
+		bpp2 = 0x0202,		// 2bpp  | 0x02
+		bpp4 = 0x0404,		// 4bpp  | 0x04
+		bpp8 = 0x0808,		// 8bpp  | 0x08
+		bpp16 = 0x1010,		// 16bpp | 0x10
+		bpp24 = 0x1820,		// 24bpp | 0x20
+		bpp32 = 0x2040,		// 32bpp | 0x40
+
+		// channels format flags in hi-dword
+		// lo-word represents the channel identifier.
+		// hi-word represents the number of channels.
+		rgb = 0x0301 << 16,		
+		rgba = 0x0402 << 16,
+		indexed = 0x0108 << 16,
+		grayscale = 0x0104 << 16,
 	};
 
-	//enum class pixel_channels : short
-	//{
-	//	undefined = 0x00,
-	//	alpha = 0x01,
-	//	rgb = 0x02,
-	//	bgr = 0x04,
-	//	gray = 0x08,
-	//	gray_alpha = (alpha | gray),
-	//	pallette = 0x10,
-	//	argb = (alpha | rgb),
-	//	abgr = (alpha | bgr),
-	//	rgba = (alpha | rgb),
-	//	bgra = (alpha | rgb),
-	//};
+	pixel_format operator & (pixel_format const _Left, pixel_format const _Right);
+	pixel_format operator | (pixel_format const _Left, pixel_format const _Right);
+	pixel_format operator ^ (pixel_format const _Left, pixel_format const _Right);
+	pixel_format operator &=(pixel_format& _Left, pixel_format const _Right);
+	pixel_format operator |= (pixel_format& _Left, pixel_format const _Right);
+	pixel_format operator ^= (pixel_format& _Left, pixel_format const _Right);
+	pixel_format operator ~(pixel_format& _Fmt);
+
+
+	unsigned int bpp(pixel_format const);
+	unsigned int channels(pixel_format const);
 
 	class bitmap
 	{
@@ -104,10 +106,12 @@ namespace libimg
 		const_pointer raw() const noexcept;
 
 		bool empty() const noexcept;
-		pixel_format format() const noexcept;
 		size_type size() const noexcept;
 		
-		pixel_format depth() const noexcept;
+		unsigned short depth() const noexcept;
+		unsigned short channels() const noexcept;
+		pixel_format format() const noexcept;
+
 		size_type dpi() const noexcept;
 		size_type xdpi() const noexcept;
 		size_type ydpi() const noexcept;
@@ -116,6 +120,7 @@ namespace libimg
 		size_type height() const noexcept;
 
 		void clear(unsigned int = 0xFF << 24) noexcept;
+		void resize(std::size_t _Width, std::size_t _Height);
 
 		void assign(bitmap&&);
 		void assign(bitmap const&);

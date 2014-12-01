@@ -4,56 +4,92 @@
 #pragma once
 
 #include <iterator>
-
+#include <type_traits>
 
 namespace libimg
 {
-	struct _pixel_t;
 	struct _bitmap_iterator;
 	enum class pixel_format : unsigned int;
-	
 
-
-	typedef struct _pixel_t
+	namespace detail
 	{
-	private:
-		friend struct _bitmap_iterator;
-		friend bool operator == (_pixel_t const&, _pixel_t const&);
-		friend bool operator != (_pixel_t const&, _pixel_t const&);
+		template <typename _T> typename std::add_lvalue_reference<_T>::type asref(_T * _Ptr) { return *_Ptr; }
+		template <typename _T> typename std::add_lvalue_reference<_T>::type asref(_T & _Ref) { return _Ref; }
+		template <typename _T> typename std::add_pointer<_T>::type asptr(_T * _Ptr) { return _Ptr; }
+		template <typename _T> typename std::add_pointer<_T>::type asptr(_T & _Ref) { return &_Ref; }
 
-		unsigned int& _val;
-		pixel_format& _fmt;
+		template <typename _T>
+		struct _pixel_t
+		{
+		private:
+			_T _val;
+			pixel_format _fmt;
 
-		_pixel_t(unsigned int& _Val, pixel_format& _Fmt);
+			template <typename _U>
+			friend struct _pixel_t;
 
-	public:
-		_pixel_t& operator = (unsigned int);
-		_pixel_t& operator = (_pixel_t const&);
+			template <typename _T, typename _Fn2>
+			friend void _Transform(_pixel_t<_T>& _Val1, _pixel_t<_T> const& _Val2, _Fn2 Func);
 
-		_pixel_t& operator += (unsigned int);
-		_pixel_t& operator -= (unsigned int);
-		_pixel_t& operator *= (unsigned int);
-		_pixel_t& operator /= (unsigned int);
+		public:
+			_pixel_t() = default;
+			_pixel_t(_pixel_t&&) = default;
+			_pixel_t(_pixel_t const&) = default;
+			_pixel_t(_T _Val, const pixel_format _Fmt) noexcept;
 
-#if (-1UL != -1U)
-		operator unsigned long();
-		operator signed long();
-#endif
-		operator unsigned long long() const noexcept;
-		operator unsigned int() const noexcept;
-		operator unsigned short() const noexcept;
-		operator unsigned char() const noexcept;
+			template <typename _U> 
+			_pixel_t(_pixel_t<_U> const& _Other)
+				: _val(asref(_Other._val)), _fmt(_Other._fmt)
+ 			{
+			}
 
-		operator signed long long() const noexcept;
-		operator signed int() const noexcept;
-		operator signed short() const noexcept;
-		operator signed char() const noexcept;
-	} pixel_t;
+			template <typename _U> 
+			_pixel_t& operator = (_pixel_t<_U> const& _Other)
+			{
+				asref(this->_val) = asref(_Other._val);
+				this->_fmt = _Other._fmt;
 
-	bool operator == (_pixel_t const&, _pixel_t const&);
-	bool operator != (_pixel_t const&, _pixel_t const&);
+				return *this;
+			}
 
+			_pixel_t<_T>& operator = (_pixel_t<_T>&&) = default;
+			_pixel_t<_T>& operator = (_pixel_t<_T> const&);
 
+			_pixel_t<_T>& operator = (unsigned int);
+
+			_pixel_t<_T>& operator += (_pixel_t<_T> const&);
+			_pixel_t<_T>& operator -= (_pixel_t<_T> const&);
+			_pixel_t<_T>& operator *= (_pixel_t<_T> const&);
+			_pixel_t<_T>& operator /= (_pixel_t<_T> const&);
+			_pixel_t<_T>& operator *= (double const);
+			_pixel_t<_T>& operator /= (double const);
+
+			operator unsigned int() const noexcept;
+
+			template <typename _U>
+			friend bool operator == (_pixel_t<_U> const&, _pixel_t<_U> const&) noexcept;
+
+			template <typename _U>
+			friend bool operator < (_pixel_t<_U> const&, _pixel_t<_U> const&) noexcept;
+		};
+
+		template <typename _T> bool operator == (_pixel_t<_T> const&, _pixel_t<_T> const&) noexcept;
+		template <typename _T> bool operator != (_pixel_t<_T> const&, _pixel_t<_T> const&) noexcept;
+		template <typename _T> bool operator <= (_pixel_t<_T> const&, _pixel_t<_T> const&) noexcept;
+		template <typename _T> bool operator >= (_pixel_t<_T> const&, _pixel_t<_T> const&) noexcept;
+		template <typename _T> bool operator < (_pixel_t<_T> const&, _pixel_t<_T> const&) noexcept;
+		template <typename _T> bool operator > (_pixel_t<_T> const&, _pixel_t<_T> const&) noexcept;
+		
+		template <typename _T> _pixel_t<_T> operator + (_pixel_t<_T> const&, _pixel_t<_T> const&) noexcept;
+		template <typename _T> _pixel_t<_T> operator - (_pixel_t<_T> const&, _pixel_t<_T> const&) noexcept;
+		template <typename _T> _pixel_t<_T> operator * (_pixel_t<_T> const&, _pixel_t<_T> const&) noexcept;
+		template <typename _T> _pixel_t<_T> operator / (_pixel_t<_T> const&, _pixel_t<_T> const&) noexcept;
+		template <typename _T> _pixel_t<_T> operator * (_pixel_t<_T> const&, double const) noexcept;
+		template <typename _T> _pixel_t<_T> operator * (double const, _pixel_t<_T> const&) noexcept;
+		template <typename _T> _pixel_t<_T> operator / (_pixel_t<_T> const&, double const) noexcept;
+	}
+
+	typedef detail::_pixel_t<unsigned int> pixel_t;
 
 	struct _bitmap_iterator
 	{
@@ -64,9 +100,11 @@ namespace libimg
 		typedef _bitmap_iterator _Myt;
 	public:
 		typedef std::random_access_iterator_tag iterator_category;
-		typedef unsigned char value_type;
-		typedef unsigned char* pointer;
-		typedef unsigned char& reference;
+		typedef detail::_pixel_t<unsigned int> value_type;
+		typedef detail::_pixel_t<unsigned int*> pointer;
+		typedef detail::_pixel_t<unsigned int&> reference;
+		typedef detail::_pixel_t<unsigned int*> const const_pointer;
+		typedef detail::_pixel_t<unsigned int&> const const_reference;
 		typedef std::ptrdiff_t difference_type;
 
 		_bitmap_iterator() = default;
@@ -78,11 +116,11 @@ namespace libimg
 		_bitmap_iterator& operator = (_bitmap_iterator&&) = default;
 		_bitmap_iterator& operator = (_bitmap_iterator const&) = default;
 
-		pixel_t operator [](std::size_t _Offset) noexcept;
-		pixel_t const operator [](std::size_t _Offset) const noexcept;
+		reference operator [](std::size_t _Offset) noexcept;
+		const_reference operator [](std::size_t _Offset) const noexcept;
 
-		pixel_t operator *() noexcept;
-		pixel_t const operator *() const noexcept;
+		reference operator *() noexcept;
+		const_reference operator *() const noexcept;
 
 		_Myt& operator ++ (int) noexcept;
 		_Myt& operator -- (int) noexcept;

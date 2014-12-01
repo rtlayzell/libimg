@@ -11,6 +11,18 @@
 #define _SCL_SECURE_NO_WARNINGS
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
 
+#include <ostream>
+#include <istream>
+#include <fstream>
+#include <string>
+#include <memory>
+
+#include <iterator>
+#include <cassert>
+
+#include <algorithm>
+#include <locale>
+
 
 
 // TODO: reference additional headers your program requires here

@@ -4,7 +4,6 @@
 #include "bitmap_iterator.hpp"
 #include "bitmap.hpp"
 
-#define FMT_BPP(X) (((std::size_t)X) & 0xFF)
 
 namespace libimg
 {
@@ -13,23 +12,24 @@ namespace libimg
 	{
 	}
 
-	pixel_t _bitmap_iterator::operator [](std::size_t _Offset) noexcept
+	_bitmap_iterator::reference _bitmap_iterator::operator [](std::size_t _Offset) noexcept
 	{
-		return pixel_t(reinterpret_cast<unsigned int&>(
-			*(this->_dataPtr + _Offset * FMT_BPP(this->_bmpFmt) / 8)), this->_bmpFmt);
+		return reference(reinterpret_cast<unsigned int&>(
+			*(this->_dataPtr + _Offset * bpp(this->_bmpFmt) / 8)), this->_bmpFmt);
 	}
 
-	pixel_t const _bitmap_iterator::operator [](std::size_t _Offset) const noexcept
+	_bitmap_iterator::const_reference const _bitmap_iterator::operator [](std::size_t _Offset) const noexcept
 	{
-		throw "hello world";
+		return const_reference(reinterpret_cast<unsigned int&>(
+			*(this->_dataPtr + _Offset * bpp(this->_bmpFmt) / 8)), this->_bmpFmt);
 	}
 
-	pixel_t _bitmap_iterator::operator *() noexcept
+	_bitmap_iterator::reference _bitmap_iterator::operator *() noexcept
 	{
 		return this->operator[](0);
 	}
 
-	pixel_t const _bitmap_iterator::operator *() const noexcept
+	_bitmap_iterator::const_reference const _bitmap_iterator::operator *() const noexcept
 	{
 		return this->operator[](0);
 	}
@@ -59,13 +59,13 @@ namespace libimg
 	_bitmap_iterator::_Myt& _bitmap_iterator::operator += (difference_type _Offs) noexcept
 	{
 		
-		this->_dataPtr += _Offs * FMT_BPP(this->_bmpFmt) / 8;
+		this->_dataPtr += _Offs * bpp(this->_bmpFmt) / 8;
 		return *this;
 	}
 
 	_bitmap_iterator::_Myt& _bitmap_iterator::operator -= (difference_type _Offs) noexcept
 	{
-		this->_dataPtr -= _Offs * FMT_BPP(this->_bmpFmt) / 8;
+		this->_dataPtr -= _Offs * bpp(this->_bmpFmt) / 8;
 		return *this;
 	}
 
@@ -102,7 +102,7 @@ namespace libimg
 
 	std::ptrdiff_t operator - (_bitmap_iterator const& _Left, _bitmap_iterator const& _Right)
 	{
-		assert(FMT_BPP(_Left._bmpFmt) == FMT_BPP(_Right._bmpFmt));
+		assert(bpp(_Left._bmpFmt) == bpp(_Right._bmpFmt));
 		return (_Left._dataPtr - _Right._dataPtr) / 8;
 	}
 
