@@ -67,7 +67,9 @@
     </Lib>
     <PostBuildEvent>
       <Command>xcopy "$(ProjectDir)include\bitmap*.hpp" "$(SolutionDir)samples\include\" /q /d /y
-xcopy "$(ProjectDir)include\bitmap*.hpp" "$(OutDir)" /q /d /y</Command>
+xcopy "$(ProjectDir)include\pixel*.hpp" "$(SolutionDir)samples\include\" /q /d /y
+xcopy "$(ProjectDir)include\bitmap*.hpp" "$(OutDir)include\" /q /d /y
+xcopy "$(ProjectDir)include\pixel*.hpp" "$(OutDir)include\" /q /d /y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -94,7 +96,9 @@ xcopy "$(ProjectDir)include\bitmap*.hpp" "$(OutDir)" /q /d /y</Command>
     </Lib>
     <PostBuildEvent>
       <Command>xcopy "$(ProjectDir)include\bitmap*.hpp" "$(SolutionDir)samples\include\" /q /d /y
-xcopy "$(ProjectDir)include\bitmap*.hpp" "$(OutDir)" /q /d /y</Command>
+xcopy "$(ProjectDir)include\pixel*.hpp" "$(SolutionDir)samples\include\" /q /d /y
+xcopy "$(ProjectDir)include\bitmap*.hpp" "$(OutDir)include\" /q /d /y
+xcopy "$(ProjectDir)include\pixel*.hpp" "$(OutDir)include\" /q /d /y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -106,6 +110,8 @@ xcopy "$(ProjectDir)include\bitmap*.hpp" "$(OutDir)" /q /d /y</Command>
     <ClInclude Include="include\impl\tif_bitmap_impl.hpp" />
     <ClInclude Include="include\libbmp\bmp.h" />
     <ClInclude Include="include\libbmp\bmpdef.h" />
+    <ClInclude Include="include\pixel.hpp" />
+    <ClInclude Include="include\pixel_format.hpp" />
     <ClInclude Include="include\stdafx.h" />
     <ClInclude Include="include\targetver.h" />
   </ItemGroup>
@@ -113,7 +119,7 @@ xcopy "$(ProjectDir)include\bitmap*.hpp" "$(OutDir)" /q /d /y</Command>
     <ClCompile Include="src\bitmap.cpp" />
     <ClInclude Include="include\bitmap_iterator.hpp" />
     <ClCompile Include="src\bitmap_iterator.cpp" />
-    <ClCompile Include="src\bitmap_iostream.cpp" />
+    <ClCompile Include="src\bitmap_ios.cpp" />
     <ClCompile Include="src\libbmp\bmp.c">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </PrecompiledHeaderFile>
@@ -151,7 +157,6 @@ xcopy "$(ProjectDir)include\bitmap*.hpp" "$(OutDir)" /q /d /y</Command>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </PrecompiledHeaderOutputFile>
     </ClCompile>
-    <ClCompile Include="src\pixel.cpp" />
     <ClCompile Include="src\pixel_format.cpp" />
     <ClCompile Include="src\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

@@ -48,6 +48,12 @@
     <ClInclude Include="include\libbmp\bmpdef.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\pixel.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pixel_format.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\bitmap.cpp">
@@ -59,13 +65,7 @@
     <ClCompile Include="src\bitmap_iterator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\bitmap_iostream.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\libbmp\bmp.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pixel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\libbmp\bmp_write.c">
@@ -75,6 +75,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\pixel_format.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\bitmap_ios.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

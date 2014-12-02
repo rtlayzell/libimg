@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "bitmap.hpp"
+#include "pixel_format.hpp"
 
 namespace libimg
 {
@@ -67,6 +67,6 @@ namespace libimg
 
 	pixel_format operator ~(pixel_format& _Fmt)
 	{
-		return _Fmt = (pixel_format)(~(unsigned int)_Fmt);
+		return (pixel_format)(~(unsigned int)_Fmt);
 	}
 }
