@@ -19,12 +19,12 @@ namespace libimg
 		bpp32 = 0x2040,		// 32bpp | 0x40
 
 		// channels format flags in hi-dword
-		// lo-word represents the channel identifier.
-		// hi-word represents the number of channels.
-		rgb = 0x0301 << 16,
-		rgba = 0x0402 << 16,
-		indexed = 0x0108 << 16,
-		grayscale = 0x0104 << 16,
+		// lo-bytes*3 represents the channel identifier.
+		// hi-byte represents the number of channels.
+		rgb = 0x3001 << 16,
+		rgba = 0x4002 << 16,
+		indexed = 0x1008 << 16,
+		grayscale = 0x1004 << 16,
 	};
 
 	pixel_format operator & (pixel_format const _Left, pixel_format const _Right);
