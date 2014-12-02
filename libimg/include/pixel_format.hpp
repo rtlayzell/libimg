@@ -19,8 +19,8 @@ namespace libimg
 		bpp32 = 0x2040,		// 32bpp | 0x40
 
 		// channels format flags in hi-dword
-		// lo-bytes*3 represents the channel identifier.
-		// hi-byte represents the number of channels.
+		// lo-nibble*3 represents the channel identifier.
+		// hi-nibble represents the number of channels.
 		rgb = 0x3001 << 16,
 		rgba = 0x4002 << 16,
 		indexed = 0x1008 << 16,
