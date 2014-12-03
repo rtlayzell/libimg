@@ -27,7 +27,7 @@ namespace libimg
 		{
 		protected:
 			_T _val;
-			pixel_format _fmt;
+			const pixel_format _fmt;
 
 			template <typename _U>
 			friend struct _pixel_base_t;
@@ -59,8 +59,10 @@ namespace libimg
 			_pixel_base_t(_pixel_base_t const& _Other) : _val(_Other._val), _fmt(_Other._fmt) { }
 
 			_pixel_base_t& operator = (_pixel_base_t<_T> const& _Other) noexcept {
+				// should not be changing the format here.
+				// instead convert the _Other pixel to the existing format and store that.
 				_val = _Other._val;
-				_fmt = _Other._fmt;
+				//_fmt = _Other._fmt;
 				return *this;
 			}
 
@@ -110,6 +112,8 @@ namespace libimg
 			using _pixel_base_t<_T&>::_pixel_base_t;
 			_pixel_t(_pixel_base_t<_T>& _Other) : _pixel_base_t(_Other._val, _Other._fmt) {}
 
+			// not sure why this is actually needed, the base class already provides it,
+			// but without this method an error explaining that it cannot be found occurs.
 			_pixel_t& operator = (std::remove_reference_t<_T> const _Val) noexcept {
 				_val = _Val;
 				return *this;
