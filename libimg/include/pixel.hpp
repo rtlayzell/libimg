@@ -55,7 +55,12 @@ namespace libimg
 
 		public:
 			_pixel_base_t() = default;
-			_pixel_base_t(_T _Val, pixel_format _Fmt) : _val(_Val), _fmt(_Fmt) { }
+			_pixel_base_t(_T _Val, pixel_format _Fmt) : _val(_Val), _fmt(_Fmt) { 
+				// process the value with _TransformScalar method, this ensures that 
+				// each channel and the number of bits per channel are adhere with overflow.
+				_TransformScalar(*this, 0, [](auto x, auto y) { return x; });
+			}
+
 			_pixel_base_t(_pixel_base_t const& _Other) : _val(_Other._val), _fmt(_Other._fmt) { }
 
 			_pixel_base_t& operator = (_pixel_base_t<_T> const& _Other) noexcept {
@@ -67,7 +72,9 @@ namespace libimg
 			}
 
 			_pixel_base_t& operator = (std::remove_reference_t<_T> const _Val) noexcept {
-				_val = _Val;
+				// process the value with _TransformScalar method, this ensures that 
+				// each channel and the number of bits per channel are adhere with overflow.
+				_TransformScalar(*this, 0, [](auto x, auto y) { return x; })
 				return *this;
 			}
 
@@ -75,6 +82,8 @@ namespace libimg
 			template <typename _U> _pixel_base_t& operator -= (_pixel_base_t<_U> const& _Other) { _Transform(*this, _Other, std::minus<>()); return *this; }
 			template <typename _U> _pixel_base_t& operator *= (_pixel_base_t<_U> const& _Other) { _Transform(*this, _Other, std::multiplies<>()); return *this; }
 			template <typename _U> _pixel_base_t& operator /= (_pixel_base_t<_U> const& _Other) { _Transform(*this, _Other, std::divides<>()); return *this; }
+			_pixel_base_t& operator += (std::remove_reference_t<_T> _Val) { return *this += _pixel_base_t<_T>(_Val, this->_fmt); }
+			_pixel_base_t& operator -= (std::remove_reference_t<_T> _Val) { return *this -= _pixel_base_t<_T>(_Val, this->_fmt); }
 			_pixel_base_t& operator *= (std::remove_reference_t<_T> _Val) { _TransformScalar(*this, _Val, std::multiplies<>()); return *this; }
 			_pixel_base_t& operator /= (std::remove_reference_t<_T> _Val) { _TransformScalar(*this, _Val, std::divides<>()); return *this; }
 
@@ -100,6 +109,15 @@ namespace libimg
 			_pixel_t(_pixel_base_t<_T> const& _Other) : _pixel_base_t(_Other._val, _Other._fmt) {}
 			_pixel_t(_pixel_base_t<_T&> const& _Ref) : _pixel_base_t(_Ref._val, _Ref._fmt) {}
 
+			// not sure why this is actually needed, the base class already provides it,
+			// but without this method an error explaining that it cannot be found occurs.
+			_pixel_t& operator = (std::remove_reference_t<_T> const _Val) noexcept {
+				// process the value with _TransformScalar method, this ensures that 
+				// each channel and the number of bits per channel are adhere with overflow.
+				_TransformScalar(*this, 0, [](auto x, auto y) { return x; });
+				return *this;
+
+			}
 			_pixel_t<_T*> operator & () noexcept { return _pixel_t<_T*>(&_val, _fmt); }
 			_pixel_t<_T*> const operator & () const noexcept { return _pixel_t<_T*>(const_cast<_T*>(&_val, _fmt)); }
 		};
@@ -115,7 +133,9 @@ namespace libimg
 			// not sure why this is actually needed, the base class already provides it,
 			// but without this method an error explaining that it cannot be found occurs.
 			_pixel_t& operator = (std::remove_reference_t<_T> const _Val) noexcept {
-				_val = _Val;
+				// process the value with _TransformScalar method, this ensures that 
+				// each channel and the number of bits per channel are adhere with overflow.
+				_TransformScalar(*this, 0, [](auto x, auto y) { return x; });
 				return *this;
 			}
 
@@ -188,6 +208,20 @@ namespace libimg
 			_pixel_t<_T2> const& _Right) noexcept
 		{
 			return _pixel_t<std::remove_reference_t<_T1>>(_Left) /= _Right;
+		}
+
+		template <typename _T>
+		_pixel_t<std::remove_reference_t<_T>> operator + (
+			_pixel_t<_T> const& _Left, std::remove_reference_t<_T> _Right) noexcept
+		{
+			return _pixel_t<std::remove_reference_t<_T>>(_Left) += _Right;
+		}
+
+		template <typename _T>
+		_pixel_t<std::remove_reference_t<_T>> operator - (
+			std::remove_reference_t<_T> _Left, _pixel_t<_T> const& _Right) noexcept
+		{
+			return _pixel_t<std::remove_reference_t<_T>>(_Right) -= _Left;
 		}
 
 		template <typename _T>
@@ -325,7 +359,7 @@ namespace libimg
 		{
 			const unsigned int chnls = channels(_Val1._fmt);
 			const unsigned int chnlbits = bpp(_Val1._fmt) / chnls;
-			const unsigned int mask = ~(~1 << (chnlbits - 1));
+			const unsigned int mask = ~(~1ULL << (chnlbits - 1));
 
 			unsigned int result = 0;
 			for (std::size_t i = 0; i < chnls; ++i)
@@ -343,7 +377,7 @@ namespace libimg
 		{
 			const unsigned int chnls = channels(_Val1._fmt);
 			const unsigned int chnlbits = bpp(_Val1._fmt) / chnls;
-			const unsigned int mask = ~(~1 << (chnlbits - 1));
+			const unsigned int mask = ~(~1ULL << (chnlbits - 1));
 
 			unsigned int result = 0;
 			for (std::size_t i = 0; i < chnls; ++i)
