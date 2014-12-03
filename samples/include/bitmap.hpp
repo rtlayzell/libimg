@@ -19,13 +19,16 @@
 
 namespace libimg
 {
-	// forward declare ostream manipulators for writing
-	// the various types of image formats supported by libimg.
+	namespace io
+	{
+		// forward declare ostream manipulators for writing
+		// the various types of image formats supported by libimg.
 
-	std::ostream& bmp(std::ostream& _Os);
-	std::ostream& png(std::ostream& _Os);
-	std::ostream& jpg(std::ostream& _Os);
-	std::ostream& tif(std::ostream& _Os);
+		std::ostream& bmp(std::ostream& _Os);
+		std::ostream& png(std::ostream& _Os);
+		std::ostream& jpg(std::ostream& _Os);
+		std::ostream& tif(std::ostream& _Os);
+	}
 
 	class bitmap
 	{
