@@ -43,6 +43,10 @@ namespace libimg
 			png_destroy_read_struct(&_pngPtr, &_infoPtr, (png_infopp)0);
 		}
 
+		void init(std::size_t _Width, std::size_t _Height, pixel_format _Fmt) override
+		{
+		}
+
 		// could probably do better than this but it'll do for now.
 		void load(std::istream& _Is) override
 		{
@@ -76,9 +80,14 @@ namespace libimg
 			png_set_read_fn(pngPtr, (png_voidp)&_Is, _IStreamReadPNGData);
 			png_set_sig_bytes(pngPtr, PNGSIGSIZE);
 			png_read_info(pngPtr, infoPtr);
-			
+
+
 			this->_pngPtr = pngPtr;
 			this->_infoPtr = infoPtr;
+		}
+
+		void load(std::istream& _Is, std::size_t _Off, std::size_t _Len)
+		{
 		}
 
 		void save(std::ostream& _Os) override
@@ -99,16 +108,19 @@ namespace libimg
 		pixel_format format() const noexcept override
 		{
 			png_byte color_type = png_get_color_type(this->_pngPtr, this->_infoPtr);
-			/*switch (color_type)
+			png_byte bpp = png_get_bit_depth(this->_pngPtr, this->_infoPtr);
+			pixel_format fmt = pixel_format::undefined; // 0
+			
+			switch (color_type)
 			{
-			case PNG_COLOR_TYPE_PALETTE: return pixel_format::pallette;
-			case PNG_COLOR_TYPE_GRAY: return pixel_format::gray;
-			case PNG_COLOR_TYPE_GRAY_ALPHA: return (pixel_format::gray_alpha);
-			case PNG_COLOR_TYPE_RGB: return pixel_format::rgb;
-			case PNG_COLOR_TYPE_RGBA: return pixel_format::rgba;
-			}*/
+			case PNG_COLOR_TYPE_PALETTE: fmt |= pixel_format::indexed; break;
+			case PNG_COLOR_TYPE_GRAY: fmt |= pixel_format::grayscale; break;
+			case PNG_COLOR_TYPE_GA: fmt |= pixel_format::ga; break;
+			case PNG_COLOR_TYPE_RGB: fmt |= pixel_format::rgb; break;
+			case PNG_COLOR_TYPE_RGBA: fmt |= pixel_format::rgba; break;
+			}
 
-			return pixel_format::undefined;
+			return fmt;
 		}
 
 		std::size_t xdpi() const noexcept override
@@ -133,6 +145,11 @@ namespace libimg
 		{
 			return static_cast<bitmap::size_type>(
 				png_get_image_height(this->_pngPtr, this->_infoPtr));
+		}
+
+		std::size_t size() const noexcept override
+		{
+			return 0;
 		}
 	};
 }

@@ -14,6 +14,7 @@ namespace libimg
 
 		virtual ~bitmap_impl() {}
 
+		virtual void init(std::size_t _Width, std::size_t _Height, pixel_format _Fmt) = 0;
 		virtual void load(std::istream&) = 0;
 		virtual void save(std::ostream&) = 0;
 
@@ -25,6 +26,7 @@ namespace libimg
 		virtual std::size_t ydpi() const noexcept = 0;
 		virtual std::size_t width() const noexcept = 0;
 		virtual std::size_t height() const noexcept = 0;
+		virtual std::size_t size() const noexcept = 0;
 	};
 }
 
