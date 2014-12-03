@@ -7,7 +7,7 @@ namespace libimg
 	{
 		undefined = 0x0000,	// ----  | 0x00
 
-		// bits-per-pixel format flags in lo-dword
+		// bits-per-pixel format flags.
 		// lo-word represents bpp identifier
 		// hi-word represents number of bits.
 		bpp1 = 0x0101,		// 1bpp  | 0x01
@@ -18,13 +18,15 @@ namespace libimg
 		bpp24 = 0x1820,		// 24bpp | 0x20
 		bpp32 = 0x2040,		// 32bpp | 0x40
 
-		// channels format flags in hi-dword
+		// channels format flags.
 		// lo-bytes*3 represents the channel identifier.
 		// hi-byte represents the number of channels.
-		rgb = 0x3001 << 16,
-		rgba = 0x4002 << 16,
+		ga = 0x2001 << 16,
+		rgb = 0x3002 << 16,
+		rgba = 0x4004 << 16,
 		indexed = 0x1008 << 16,
-		grayscale = 0x1004 << 16,
+		grayscale = 0x1010 << 16,
+		bilevel = grayscale | bpp1,
 	};
 
 	pixel_format operator & (pixel_format const, pixel_format const);
@@ -34,7 +36,6 @@ namespace libimg
 	pixel_format& operator |= (pixel_format&, pixel_format const);
 	pixel_format& operator ^= (pixel_format&, pixel_format const);
 	pixel_format operator ~(pixel_format&);
-
 
 	unsigned short bpp(pixel_format const);
 	unsigned short channels(pixel_format const);
