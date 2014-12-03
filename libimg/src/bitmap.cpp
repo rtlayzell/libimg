@@ -41,7 +41,9 @@ namespace libimg
 	bitmap::bitmap(std::size_t _Width, std::size_t _Height, bitmap::value_type _Color, pixel_format _Fmt)
 		: _pimpl(std::make_shared<bitmap_impl::bmp>()) // defaults to .bmp file.
 	{
-		this->clear(_Color);
+		if (this->_pimpl) 
+			this->_pimpl->init(_Width, _Height, _Fmt);
+		//this->clear(_Color);
 	}
 
 	bitmap::iterator bitmap::operator [](std::size_t _Row) noexcept
@@ -89,6 +91,8 @@ namespace libimg
 
 	bitmap::size_type bitmap::size() const noexcept
 	{
+		if (this->_pimpl)
+			return this->_pimpl->size();
 		return 0;
 	}
 
