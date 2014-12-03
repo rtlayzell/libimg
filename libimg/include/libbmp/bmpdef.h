@@ -79,6 +79,18 @@ bmp_dib_v3_header_swap_endianess(bmp_dib_v3_header_t *dib)
 	dib->nimpcolors = UINT32_SWAP_LE_BE_CONSTANT(dib->nimpcolors);
 }
 
+void bmp_malloc_pixels(bmp_structp bmp)
+{
+	uint32_t i;
+	uint32_t length;
+
+	length = bmp->dib.width * bmp->dib.height;
+	bmp->pixels = (rgb_pixel_t*)malloc(sizeof(rgb_pixel_t) * length);
+
+	for (i = 0; i < length; ++i)
+		memset(&bmp->pixels[i], 0xff, sizeof(rgb_pixel_t));
+}
+
 void bmp_malloc_colors(bmp_structp bmp)
 {
 	bmp->dib.ncolors = uint32_pow(2, bmp->dib.depth);
@@ -98,7 +110,10 @@ bmp_free_pixels(bmp_structp bmp)
 		return;
 
 	if (bmp->pixels)
+	{
 		free(bmp->pixels);
+		bmp->pixels = NULL;
+	}
 }
 
 /**
@@ -111,7 +126,10 @@ bmp_free_colors(bmp_structp bmp)
 		return;
 
 	if (bmp->colors)
+	{
 		free(bmp->colors);
+		bmp->colors = NULL;
+	}
 }
 
 

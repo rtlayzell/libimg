@@ -89,40 +89,50 @@ typedef struct {
 } bmp_dib_v3_header_t;
 
 typedef struct _bmp_struct bmp_struct;
+typedef bmp_struct const* bmp_const_structp;
 typedef bmp_struct* bmp_structp;
+typedef bmp_struct** bmp_structpp;
 
 typedef void(*bmp_rw_ptr)(bmp_structp bmp, uint8_t* data, uint32_t length);
 
+void bmp_destroy_struct(bmp_structp bmp);
 void bmp_destroy_read_struct(bmp_structp bmp);
 void bmp_destroy_write_struct(bmp_structp bmp);
 
-bmp_structp bmp_create_struct();
 
+bmp_structp bmp_create_bitmap(uint32_t width, uint32_t height, uint16_t depth);
+
+bmp_structp bmp_create_struct();
 bmp_structp bmp_create_read_struct();
 bmp_structp bmp_create_write_struct();
 
 bool_t bmp_set_read_fn(bmp_structp bmp, void* io_ptr, bmp_rw_ptr fn);
 bool_t bmp_set_write_fn(bmp_structp bmp, void* io_ptr, bmp_rw_ptr fn);
 
-void* bmp_get_io_ptr(bmp_structp bmp);
+void* bmp_get_io_ptr(bmp_const_structp bmp);
 
-uint32_t bmp_get_width(bmp_structp bmp);
-uint32_t bmp_get_height(bmp_structp bmp);
+uint32_t bmp_get_width(bmp_const_structp bmp);
+uint32_t bmp_get_height(bmp_const_structp  bmp);
 
-uint16_t bmp_get_depth(bmp_structp bmp);
-uint32_t bmp_get_dpi(bmp_structp bmp);
-uint32_t bmp_get_dpi_x(bmp_structp bmp);
-uint32_t bmp_get_dpi_y(bmp_structp bmp);
+uint32_t bmp_get_pixel_offset(bmp_const_structp bmp);
+uint16_t bmp_get_creator1(bmp_const_structp bmp);
+uint16_t bmp_get_creator2(bmp_const_structp bmp);
+
+uint32_t bmp_get_filesz(bmp_const_structp bmp);
+uint16_t bmp_get_depth(bmp_const_structp bmp);
+uint32_t bmp_get_dpi(bmp_const_structp bmp);
+uint32_t bmp_get_dpi_x(bmp_const_structp bmp);
+uint32_t bmp_get_dpi_y(bmp_const_structp bmp);
 
 void bmp_read_header(bmp_structp bmp);
 void bmp_read_dib(bmp_structp bmp);
 void bmp_read_palette(bmp_structp bmp);
-void bmp_read_pixels(bmp_structp bmp);
+void bmp_read_pixels(bmp_structp bmp, uint32_t offset, uint32_t length);
 
 void bmp_write_header(bmp_structp bmp);
 void bmp_write_dib(bmp_structp bmp);
 void bmp_write_palette(bmp_structp bmp);
-void bmp_write_pixels(bmp_structp bmp);
+void bmp_write_pixels(bmp_structp bmp, uint32_t offset, uint32_t length);
 
 BMP_END_DECLS
 

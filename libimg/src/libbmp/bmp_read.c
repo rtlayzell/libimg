@@ -1,22 +1,16 @@
-
 #include "..\..\include\libbmp\bmp.h"
 #include "..\..\include\libbmp\bmpdef.h"
 
 
-
 void bmp_destroy_read_struct(bmp_structp bmp)
 {
-	bmp_free_pixels(bmp);
-	bmp_free_colors(bmp);
-	free(bmp);
+	bmp_destroy_struct(bmp);
 }
-
 
 bmp_structp bmp_create_read_struct()
 {
 	return bmp_create_struct();
 }
-
 
 bool_t bmp_set_read_fn(bmp_structp bmp, void* io_ptr, bmp_rw_ptr fn)
 {
@@ -107,7 +101,7 @@ bmp_read_palette(bmp_structp bmp)
 
 
 void
-bmp_read_pixels(bmp_structp bmp)
+bmp_read_pixels(bmp_structp bmp, uint32_t offset, uint32_t length)
 {
 	/*int index;
 	unsigned char *buf;

@@ -2,9 +2,11 @@
 #include "..\..\include\libbmp\bmp.h"
 #include "..\..\include\libbmp\bmpdef.h"
 
+static bool_t bmp_validate_bit_depth(uint16_t depth);
+
 void bmp_destroy_write_struct(bmp_structp bmp)
 {
-
+	bmp_destroy_struct(bmp);
 }
 
 bmp_structp bmp_create_write_struct()
@@ -92,7 +94,7 @@ void bmp_write_palette(bmp_structp bmp)
 }
 
 void
-bmp_write_pixels(bmp_structp bmp)
+bmp_write_pixels(bmp_structp bmp, uint32_t offset, uint32_t length)
 {
 	int index;
 	unsigned char *buf;
@@ -158,4 +160,66 @@ bmp_write_pixels(bmp_structp bmp)
 
 		free(buf);
 	}
+}
+
+
+bmp_structp
+bmp_create_bitmap(uint32_t width, uint32_t height, uint16_t depth)
+{
+	bmp_structp result;
+	double bpp;
+	uint32_t bpl;
+	uint32_t palette_size;
+
+	if (!bmp_validate_bit_depth(depth))
+		return NULL;
+
+	result = (bmp_structp)malloc(sizeof(bmp_struct));
+	memset(result, 0, sizeof(bmp_struct));
+
+	result->header.magic[0] = 'B';
+	result->header.magic[1] = 'M';
+
+	result->dib.header_sz = 40; // ? sizeof(bmp_header_t) ?
+	result->dib.width = width;
+	result->dib.height = height;
+	result->dib.nplanes = 1;
+	result->dib.depth = depth;
+	result->dib.hres = DEFAULT_DPI_X;
+	result->dib.vres = DEFAULT_DPI_Y;
+
+	// COMPRESS TYPE
+
+	bmp_malloc_pixels(result);
+	bmp_malloc_colors(result);
+
+	// calculate the number bytes in the bitmap.
+	bpp = result->dib.depth / 8.0;
+	bpl = (int)ceil(bpp * result->dib.width);
+	bpl += bpl % 4; // add padding if necessary.
+
+	result->dib.bmp_bytesz = bpl * result->dib.height;
+
+	// calculate the palette size given specified depth.
+	palette_size = 0;
+	if (depth <= 8) palette_size = (1 << result->dib.depth) * 4;
+	else if (depth == 16) palette_size = 12;
+
+	result->header.offset = 14 + result->dib.header_sz + palette_size;
+	result->header.filesz = result->header.offset + result->dib.bmp_bytesz;
+
+	rgb_pixel_t* test = (rgb_pixel_t*)(&result->header + result->header.offset);
+	return result;
+}
+
+static bool_t
+bmp_validate_bit_depth(uint16_t depth)
+{
+	return depth == 1
+		|| depth == 2
+		|| depth == 4
+		|| depth == 8
+		|| depth == 16
+		|| depth == 24
+		|| depth == 32;
 }
