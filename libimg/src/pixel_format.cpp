@@ -5,12 +5,17 @@ namespace libimg
 {
 	unsigned short bpp(pixel_format const _Fmt)
 	{
-		return (unsigned short)((unsigned int)_Fmt & 0xff00) >> 8;
+		unsigned int fmt = (unsigned int)_Fmt;
+
+		if ((fmt & 0xffff))
+			return (fmt & 0xff00) >> 8;
+
+		return channels(_Fmt) * 8;
 	}
 
 	unsigned short channels(pixel_format const _Fmt)
 	{
-		return (unsigned short)((unsigned int)_Fmt & 0xf0000000) >> 28;
+		return (unsigned short)(((unsigned int)_Fmt & 0xf0000000) >> 28);
 	}
 
 	pixel_format operator & (pixel_format const _Left, pixel_format const _Right)
