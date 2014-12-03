@@ -3,14 +3,14 @@
 
 namespace libimg
 {
-	unsigned int bpp(pixel_format const _Fmt)
+	unsigned short bpp(pixel_format const _Fmt)
 	{
-		return ((unsigned int)_Fmt & 0xff00) >> 8;
+		return (unsigned short)((unsigned int)_Fmt & 0xff00) >> 8;
 	}
 
-	unsigned int channels(pixel_format const _Fmt)
+	unsigned short channels(pixel_format const _Fmt)
 	{
-		return ((unsigned int)_Fmt & 0xf0000000) >> 28;
+		return (unsigned short)((unsigned int)_Fmt & 0xf0000000) >> 28;
 	}
 
 	pixel_format operator & (pixel_format const _Left, pixel_format const _Right)
@@ -50,17 +50,17 @@ namespace libimg
 			(unsigned int)_Right);
 	}
 
-	pixel_format operator &=(pixel_format& _Left, pixel_format const _Right)
+	pixel_format& operator &=(pixel_format& _Left, pixel_format const _Right)
 	{
 		return _Left = _Left & _Right;
 	}
 
-	pixel_format operator |= (pixel_format& _Left, pixel_format const _Right)
+	pixel_format& operator |= (pixel_format& _Left, pixel_format const _Right)
 	{
 		return _Left = _Left | _Right;
 	}
 
-	pixel_format operator ^= (pixel_format& _Left, pixel_format const _Right)
+	pixel_format& operator ^= (pixel_format& _Left, pixel_format const _Right)
 	{
 		return _Left = _Left ^ _Right;
 	}

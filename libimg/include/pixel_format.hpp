@@ -27,17 +27,17 @@ namespace libimg
 		grayscale = 0x1004 << 16,
 	};
 
-	pixel_format operator & (pixel_format const _Left, pixel_format const _Right);
-	pixel_format operator | (pixel_format const _Left, pixel_format const _Right);
-	pixel_format operator ^ (pixel_format const _Left, pixel_format const _Right);
-	pixel_format operator &=(pixel_format& _Left, pixel_format const _Right);
-	pixel_format operator |= (pixel_format& _Left, pixel_format const _Right);
-	pixel_format operator ^= (pixel_format& _Left, pixel_format const _Right);
-	pixel_format operator ~(pixel_format& _Fmt);
+	pixel_format operator & (pixel_format const, pixel_format const);
+	pixel_format operator | (pixel_format const, pixel_format const);
+	pixel_format operator ^ (pixel_format const, pixel_format const);
+	pixel_format& operator &= (pixel_format&, pixel_format const);
+	pixel_format& operator |= (pixel_format&, pixel_format const);
+	pixel_format& operator ^= (pixel_format&, pixel_format const);
+	pixel_format operator ~(pixel_format&);
 
 
-	unsigned int bpp(pixel_format const);
-	unsigned int channels(pixel_format const);
+	unsigned short bpp(pixel_format const);
+	unsigned short channels(pixel_format const);
 }
 
 #endif /*HEADER_PIXEL_FORMAT_HPP*/
