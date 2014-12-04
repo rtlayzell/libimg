@@ -13,57 +13,57 @@ namespace libimg
 	namespace detail
 	{
 		template <typename _T>
-		struct _pixel_t;
+		struct _Pixel;
 	}
 
-	typedef detail::_pixel_t<unsigned int> pixel_t;
-	typedef detail::_pixel_t<unsigned int*> pixelptr_t;
-	typedef detail::_pixel_t<unsigned int&> pixelref_t;
+	typedef detail::_Pixel<unsigned int> pixel_t;
+	typedef detail::_Pixel<unsigned int*> pixelptr_t;
+	typedef detail::_Pixel<unsigned int&> pixelref_t;
 
 	namespace detail
 	{
 		template <typename _T>
-		struct _pixel_base_t
+		struct _PixelBase
 		{
 		protected:
 			_T _val;
 			const pixel_format _fmt;
 
 			template <typename _U>
-			friend struct _pixel_base_t;
+			friend struct _PixelBase;
 
 			template <typename _U>
-			friend struct _pixel_t;
+			friend struct _Pixel;
 
 			template <typename _T1, typename _T2>
-			friend bool operator == (_pixel_base_t<_T1> const&, _pixel_base_t<_T2> const&) noexcept;
+			friend bool operator == (_PixelBase<_T1> const&, _PixelBase<_T2> const&) noexcept;
 
 			template <typename _T1, typename _T2>
-			friend bool operator < (_pixel_base_t<_T1> const&, _pixel_base_t<_T2> const&) noexcept;
+			friend bool operator < (_PixelBase<_T1> const&, _PixelBase<_T2> const&) noexcept;
 
 			template <typename _T, typename _Elem, typename _Traits>
-			friend std::basic_ostream<_Elem, _Traits>& operator << (std::basic_ostream<_Elem, _Traits>&, _pixel_base_t<_T> const&);
+			friend std::basic_ostream<_Elem, _Traits>& operator << (std::basic_ostream<_Elem, _Traits>&, _PixelBase<_T> const&);
 
 			template <typename _T, typename _Elem, typename _Traits>
-			friend std::basic_istream<_Elem, _Traits>& operator << (std::basic_istream<_Elem, _Traits>&, _pixel_base_t<_T> const&);
+			friend std::basic_istream<_Elem, _Traits>& operator << (std::basic_istream<_Elem, _Traits>&, _PixelBase<_T> const&);
 
 			template <typename _T1, typename _T2, typename _Fn2>
-			friend void _Transform(_pixel_base_t<_T1>& _Val1, _pixel_base_t<_T2> const& _Val2, _Fn2 Func) noexcept;
+			friend void _Transform(_PixelBase<_T1>& _Val1, _PixelBase<_T2> const& _Val2, _Fn2 Func) noexcept;
 
 			template <typename _T1, typename _T2, typename _Fn2>
-			friend void _TransformScalar(_pixel_base_t<_T1>& _Val1, _T2 const& _Val2, _Fn2 _Func) noexcept;
+			friend void _TransformScalar(_PixelBase<_T1>& _Val1, _T2 const& _Val2, _Fn2 _Func) noexcept;
 
 		public:
-			_pixel_base_t() = default;
-			_pixel_base_t(_T _Val, pixel_format _Fmt) : _val(_Val), _fmt(_Fmt) { 
+			_PixelBase() = default;
+			_PixelBase(_T _Val, pixel_format _Fmt) : _val(_Val), _fmt(_Fmt) { 
 				// process the value with _TransformScalar method, this ensures that 
 				// each channel and the number of bits per channel are adhere with overflow.
 				_TransformScalar(*this, 0, [](auto x, auto y) { return x; });
 			}
 
-			_pixel_base_t(_pixel_base_t const& _Other) : _val(_Other._val), _fmt(_Other._fmt) { }
+			_PixelBase(_PixelBase const& _Other) : _val(_Other._val), _fmt(_Other._fmt) { }
 
-			_pixel_base_t& operator = (_pixel_base_t<_T> const& _Other) noexcept {
+			_PixelBase& operator = (_PixelBase<_T> const& _Other) noexcept {
 				// should not be changing the format here.
 				// instead convert the _Other pixel to the existing format and store that.
 				_val = _Other._val;
@@ -71,29 +71,29 @@ namespace libimg
 				return *this;
 			}
 
-			_pixel_base_t& operator = (std::remove_reference_t<_T> const _Val) noexcept {
+			_PixelBase& operator = (std::remove_reference_t<_T> const _Val) noexcept {
 				// process the value with _TransformScalar method, this ensures that 
 				// each channel and the number of bits per channel are adhere with overflow.
 				_TransformScalar(*this, 0, [](auto x, auto y) { return x; })
 				return *this;
 			}
 
-			template <typename _U> _pixel_base_t& operator += (_pixel_base_t<_U> const& _Other) { _Transform(*this, _Other, std::plus<>()); return *this; }
-			template <typename _U> _pixel_base_t& operator -= (_pixel_base_t<_U> const& _Other) { _Transform(*this, _Other, std::minus<>()); return *this; }
-			template <typename _U> _pixel_base_t& operator *= (_pixel_base_t<_U> const& _Other) { _Transform(*this, _Other, std::multiplies<>()); return *this; }
-			template <typename _U> _pixel_base_t& operator /= (_pixel_base_t<_U> const& _Other) { _Transform(*this, _Other, std::divides<>()); return *this; }
-			_pixel_base_t& operator += (std::remove_reference_t<_T> _Val) { return *this += _pixel_base_t<_T>(_Val, this->_fmt); }
-			_pixel_base_t& operator -= (std::remove_reference_t<_T> _Val) { return *this -= _pixel_base_t<_T>(_Val, this->_fmt); }
-			_pixel_base_t& operator *= (std::remove_reference_t<_T> _Val) { _TransformScalar(*this, _Val, std::multiplies<>()); return *this; }
-			_pixel_base_t& operator /= (std::remove_reference_t<_T> _Val) { _TransformScalar(*this, _Val, std::divides<>()); return *this; }
+			template <typename _U> _PixelBase& operator += (_PixelBase<_U> const& _Other) { _Transform(*this, _Other, std::plus<>()); return *this; }
+			template <typename _U> _PixelBase& operator -= (_PixelBase<_U> const& _Other) { _Transform(*this, _Other, std::minus<>()); return *this; }
+			template <typename _U> _PixelBase& operator *= (_PixelBase<_U> const& _Other) { _Transform(*this, _Other, std::multiplies<>()); return *this; }
+			template <typename _U> _PixelBase& operator /= (_PixelBase<_U> const& _Other) { _Transform(*this, _Other, std::divides<>()); return *this; }
+			_PixelBase& operator += (std::remove_reference_t<_T> _Val) { return *this += _PixelBase<_T>(_Val, this->_fmt); }
+			_PixelBase& operator -= (std::remove_reference_t<_T> _Val) { return *this -= _PixelBase<_T>(_Val, this->_fmt); }
+			_PixelBase& operator *= (std::remove_reference_t<_T> _Val) { _TransformScalar(*this, _Val, std::multiplies<>()); return *this; }
+			_PixelBase& operator /= (std::remove_reference_t<_T> _Val) { _TransformScalar(*this, _Val, std::divides<>()); return *this; }
 
-			_pixel_t<_T> operator ~ () noexcept { return _pixel_t<_T>(~_val, _fmt); }
-			template <typename _U> _pixel_base_t& operator &= (_pixel_base_t<_U> const& _Other) noexcept { this->_val &= _Other._val; return *this; }
-			template <typename _U> _pixel_base_t& operator |= (_pixel_base_t<_U> const& _Other) noexcept { this->_val |= _Other._val; return *this; }
-			template <typename _U> _pixel_base_t& operator ^= (_pixel_base_t<_U> const& _Other) noexcept { this->_val ^= _Other._val; return *this; }
-			_pixel_base_t<_T>& operator &= (std::remove_reference_t<std::remove_pointer_t<_T>> _Val) noexcept { this->_val &= _Val; return *this; }
-			_pixel_base_t<_T>& operator |= (std::remove_reference_t<std::remove_pointer_t<_T>> _Val) noexcept { this->_val |= _Val; return *this; }
-			_pixel_base_t<_T>& operator ^= (std::remove_reference_t<std::remove_pointer_t<_T>> _Val) noexcept { this->_val ^= _Val; return *this; }
+			_Pixel<_T> operator ~ () noexcept { return _Pixel<_T>(~_val, _fmt); }
+			template <typename _U> _PixelBase& operator &= (_PixelBase<_U> const& _Other) noexcept { this->_val &= _Other._val; return *this; }
+			template <typename _U> _PixelBase& operator |= (_PixelBase<_U> const& _Other) noexcept { this->_val |= _Other._val; return *this; }
+			template <typename _U> _PixelBase& operator ^= (_PixelBase<_U> const& _Other) noexcept { this->_val ^= _Other._val; return *this; }
+			_PixelBase<_T>& operator &= (std::remove_reference_t<std::remove_pointer_t<_T>> _Val) noexcept { this->_val &= _Val; return *this; }
+			_PixelBase<_T>& operator |= (std::remove_reference_t<std::remove_pointer_t<_T>> _Val) noexcept { this->_val |= _Val; return *this; }
+			_PixelBase<_T>& operator ^= (std::remove_reference_t<std::remove_pointer_t<_T>> _Val) noexcept { this->_val ^= _Val; return *this; }
 
 			explicit operator _T() const noexcept
 			{
@@ -102,59 +102,59 @@ namespace libimg
 		};
 
 		template <typename _T>
-		struct _pixel_t : _pixel_base_t<_T>
+		struct _Pixel : _PixelBase<_T>
 		{
 		public:
-			using _pixel_base_t<_T>::_pixel_base_t;
-			_pixel_t(_pixel_base_t<_T> const& _Other) : _pixel_base_t(_Other._val, _Other._fmt) {}
-			_pixel_t(_pixel_base_t<_T&> const& _Ref) : _pixel_base_t(_Ref._val, _Ref._fmt) {}
+			using _PixelBase<_T>::_PixelBase;
+			_Pixel(_PixelBase<_T> const& _Other) : _PixelBase(_Other._val, _Other._fmt) {}
+			_Pixel(_PixelBase<_T&> const& _Ref) : _PixelBase(_Ref._val, _Ref._fmt) {}
 
 			// not sure why this is actually needed, the base class already provides it,
 			// but without this method an error explaining that it cannot be found occurs.
-			_pixel_t& operator = (std::remove_reference_t<_T> const _Val) noexcept {
+			_Pixel& operator = (std::remove_reference_t<_T> const _Val) noexcept {
 				// process the value with _TransformScalar method, this ensures that 
 				// each channel and the number of bits per channel are adhere with overflow.
 				_TransformScalar(*this, 0, [](auto x, auto y) { return x; });
 				return *this;
 
 			}
-			_pixel_t<_T*> operator & () noexcept { return _pixel_t<_T*>(&_val, _fmt); }
-			_pixel_t<_T*> const operator & () const noexcept { return _pixel_t<_T*>(const_cast<_T*>(&_val, _fmt)); }
+			_Pixel<_T*> operator & () noexcept { return _Pixel<_T*>(&_val, _fmt); }
+			_Pixel<_T*> const operator & () const noexcept { return _Pixel<_T*>(const_cast<_T*>(&_val, _fmt)); }
 		};
 
 
 		template <typename _T>
-		struct _pixel_t<_T&> : _pixel_base_t<_T&>
+		struct _Pixel<_T&> : _PixelBase<_T&>
 		{
 		public:
-			using _pixel_base_t<_T&>::_pixel_base_t;
-			_pixel_t(_pixel_base_t<_T>& _Other) : _pixel_base_t(_Other._val, _Other._fmt) {}
+			using _PixelBase<_T&>::_PixelBase;
+			_Pixel(_PixelBase<_T>& _Other) : _PixelBase(_Other._val, _Other._fmt) {}
 
 			// not sure why this is actually needed, the base class already provides it,
 			// but without this method an error explaining that it cannot be found occurs.
-			_pixel_t& operator = (std::remove_reference_t<_T> const _Val) noexcept {
+			_Pixel& operator = (std::remove_reference_t<_T> const _Val) noexcept {
 				// process the value with _TransformScalar method, this ensures that 
 				// each channel and the number of bits per channel are adhere with overflow.
 				_TransformScalar(*this, 0, [](auto x, auto y) { return x; });
 				return *this;
 			}
 
-			_pixel_t<_T*> operator & () noexcept { return _pixel_t<_T*>(&_val, _fmt); }
-			_pixel_t<_T*> const operator & () const noexcept { return _pixel_t<_T*>(const_cast<_T*>(&_val, _fmt)); }
+			_Pixel<_T*> operator & () noexcept { return _Pixel<_T*>(&_val, _fmt); }
+			_Pixel<_T*> const operator & () const noexcept { return _Pixel<_T*>(const_cast<_T*>(&_val, _fmt)); }
 		};
 
 
 		template <typename _T>
-		struct _pixel_t<_T*> : _pixel_base_t<_T*>
+		struct _Pixel<_T*> : _PixelBase<_T*>
 		{
 		public:
-			using _pixel_base_t<_T*>::_pixel_base_t;
-			_pixel_t<_T&> operator * () noexcept { return _pixel_t<_T&>(*_val, _fmt); }
-			_pixel_t<_T&> const operator * () const noexcept { return _pixel_t<_T&>(*_val, _fmt); }
+			using _PixelBase<_T*>::_PixelBase;
+			_Pixel<_T&> operator * () noexcept { return _Pixel<_T&>(*_val, _fmt); }
+			_Pixel<_T&> const operator * () const noexcept { return _Pixel<_T&>(*_val, _fmt); }
 		};
 
 		template <typename _T, typename _Elem, typename _Traits>
-		std::basic_ostream<_Elem, _Traits>& operator << (std::basic_ostream<_Elem, _Traits>& _Os, _pixel_base_t<_T> const& _Val)
+		std::basic_ostream<_Elem, _Traits>& operator << (std::basic_ostream<_Elem, _Traits>& _Os, _PixelBase<_T> const& _Val)
 		{
 			std::ios init(NULL);
 			init.copyfmt(_Os);
@@ -172,190 +172,190 @@ namespace libimg
 		}
 
 		template <typename _T, typename _Elem, typename _Traits>
-		std::basic_istream<_Elem, _Traits>& operator << (std::basic_istream<_Elem, _Traits>& _Is, _pixel_base_t<_T> const& _Val)
+		std::basic_istream<_Elem, _Traits>& operator << (std::basic_istream<_Elem, _Traits>& _Is, _PixelBase<_T> const& _Val)
 		{
 			return _Is << std::hex << ((_T)_Val);
 		}
 
 
 		template <typename _T1, typename _T2>
-		_pixel_t<std::remove_reference_t<_T1>> operator + (
-			_pixel_t<_T1> const& _Left,
-			_pixel_t<_T2> const& _Right) noexcept
+		_Pixel<std::remove_reference_t<_T1>> operator + (
+			_Pixel<_T1> const& _Left,
+			_Pixel<_T2> const& _Right) noexcept
 		{
-			return _pixel_t<std::remove_reference_t<_T1>>(_Left) += _Right;
+			return _Pixel<std::remove_reference_t<_T1>>(_Left) += _Right;
 		}
 
 		template <typename _T1, typename _T2>
-		_pixel_t<std::remove_reference_t<_T1>> operator - (
-			_pixel_t<_T1> const& _Left,
-			_pixel_t<_T2> const& _Right) noexcept
+		_Pixel<std::remove_reference_t<_T1>> operator - (
+			_Pixel<_T1> const& _Left,
+			_Pixel<_T2> const& _Right) noexcept
 		{
-			return _pixel_base_t<std::remove_reference_t<_T1>>(_Left) -= _Right;
+			return _PixelBase<std::remove_reference_t<_T1>>(_Left) -= _Right;
 		}
 
 		template <typename _T1, typename _T2>
-		_pixel_t<std::remove_reference_t<_T1>> operator * (
-			_pixel_t<_T1> const& _Left,
-			_pixel_t<_T2> const& _Right) noexcept
+		_Pixel<std::remove_reference_t<_T1>> operator * (
+			_Pixel<_T1> const& _Left,
+			_Pixel<_T2> const& _Right) noexcept
 		{
-			return _pixel_t<std::remove_reference_t<_T1>>(_Left) *= _Right;
+			return _Pixel<std::remove_reference_t<_T1>>(_Left) *= _Right;
 		}
 
 		template <typename _T1, typename _T2>
-		_pixel_t<std::remove_reference_t<_T1>> operator / (
-			_pixel_t<_T1> const& _Left,
-			_pixel_t<_T2> const& _Right) noexcept
+		_Pixel<std::remove_reference_t<_T1>> operator / (
+			_Pixel<_T1> const& _Left,
+			_Pixel<_T2> const& _Right) noexcept
 		{
-			return _pixel_t<std::remove_reference_t<_T1>>(_Left) /= _Right;
+			return _Pixel<std::remove_reference_t<_T1>>(_Left) /= _Right;
 		}
 
 		template <typename _T>
-		_pixel_t<std::remove_reference_t<_T>> operator + (
-			_pixel_t<_T> const& _Left, std::remove_reference_t<_T> _Right) noexcept
+		_Pixel<std::remove_reference_t<_T>> operator + (
+			_Pixel<_T> const& _Left, std::remove_reference_t<_T> _Right) noexcept
 		{
-			return _pixel_t<std::remove_reference_t<_T>>(_Left) += _Right;
+			return _Pixel<std::remove_reference_t<_T>>(_Left) += _Right;
 		}
 
 		template <typename _T>
-		_pixel_t<std::remove_reference_t<_T>> operator - (
-			std::remove_reference_t<_T> _Left, _pixel_t<_T> const& _Right) noexcept
+		_Pixel<std::remove_reference_t<_T>> operator - (
+			std::remove_reference_t<_T> _Left, _Pixel<_T> const& _Right) noexcept
 		{
-			return _pixel_t<std::remove_reference_t<_T>>(_Right) -= _Left;
+			return _Pixel<std::remove_reference_t<_T>>(_Right) -= _Left;
 		}
 
 		template <typename _T>
-		_pixel_t<std::remove_reference_t<_T>> operator * (
-			_pixel_t<_T> const& _Left, std::remove_reference_t<_T> _Right) noexcept
+		_Pixel<std::remove_reference_t<_T>> operator * (
+			_Pixel<_T> const& _Left, std::remove_reference_t<_T> _Right) noexcept
 		{
-			return _pixel_t<std::remove_reference_t<_T>>(_Left) *= _Right;
+			return _Pixel<std::remove_reference_t<_T>>(_Left) *= _Right;
 		}
 
 		template <typename _T>
-		_pixel_t<std::remove_reference_t<_T>> operator * (
-			std::remove_reference_t<_T> _Left, _pixel_t<_T> const& _Right) noexcept
+		_Pixel<std::remove_reference_t<_T>> operator * (
+			std::remove_reference_t<_T> _Left, _Pixel<_T> const& _Right) noexcept
 		{
-			return _pixel_t<std::remove_reference_t<_T>>(_Right) *= _Left;
+			return _Pixel<std::remove_reference_t<_T>>(_Right) *= _Left;
 		}
 
 		template <typename _T>
-		_pixel_t<std::remove_reference_t<_T>> operator / (
-			_pixel_t<_T> const& _Left, std::remove_reference_t<_T> _Right) noexcept
+		_Pixel<std::remove_reference_t<_T>> operator / (
+			_Pixel<_T> const& _Left, std::remove_reference_t<_T> _Right) noexcept
 		{
-			return _pixel_t<std::remove_reference_t<_T>>(_Left) /= _Right;
+			return _Pixel<std::remove_reference_t<_T>>(_Left) /= _Right;
 		}
 
 
 		template <typename _T1, typename _T2>
-		_pixel_t<std::remove_reference_t<_T1>> operator & (
-			_pixel_t<_T1> const& _Left,
-			_pixel_t<_T2> const& _Right) noexcept
+		_Pixel<std::remove_reference_t<_T1>> operator & (
+			_Pixel<_T1> const& _Left,
+			_Pixel<_T2> const& _Right) noexcept
 		{
-			return _pixel_t<std::remove_reference_t<_T1>>(_Left) &= _Right;
+			return _Pixel<std::remove_reference_t<_T1>>(_Left) &= _Right;
 		}
 
 		template <typename _T1, typename _T2>
-		_pixel_t<std::remove_reference_t<_T1>> operator | (
-			_pixel_t<_T1> const& _Left,
-			_pixel_t<_T2> const& _Right) noexcept
+		_Pixel<std::remove_reference_t<_T1>> operator | (
+			_Pixel<_T1> const& _Left,
+			_Pixel<_T2> const& _Right) noexcept
 		{
-			return _pixel_t<std::remove_reference_t<_T1>>(_Left) |= _Right;
+			return _Pixel<std::remove_reference_t<_T1>>(_Left) |= _Right;
 		}
 
 		template <typename _T1, typename _T2>
-		_pixel_t<std::remove_reference_t<_T1>> operator ^ (
-			_pixel_t<_T1> const& _Left,
-			_pixel_t<_T2> const& _Right) noexcept
+		_Pixel<std::remove_reference_t<_T1>> operator ^ (
+			_Pixel<_T1> const& _Left,
+			_Pixel<_T2> const& _Right) noexcept
 		{
-			return _pixel_t<std::remove_reference_t<_T1>>(_Left) ^= _Right;
+			return _Pixel<std::remove_reference_t<_T1>>(_Left) ^= _Right;
 		}
 
 		template <typename _T1, typename _T2>
-		_pixel_t<std::remove_reference_t<_T1>> operator & (
-			_pixel_t<_T1> const& _Left,
+		_Pixel<std::remove_reference_t<_T1>> operator & (
+			_Pixel<_T1> const& _Left,
 			std::remove_reference_t<std::remove_pointer_t<_T1>> _Right) noexcept
 		{
-			return _pixel_t<std::remove_reference_t<_T1>>(_Left) &= _Right;
+			return _Pixel<std::remove_reference_t<_T1>>(_Left) &= _Right;
 		}
 
 		template <typename _T1, typename _T2>
-		_pixel_t<std::remove_reference_t<_T1>> operator | (
-			_pixel_t<_T1> const& _Left,
+		_Pixel<std::remove_reference_t<_T1>> operator | (
+			_Pixel<_T1> const& _Left,
 			std::remove_reference_t<std::remove_pointer_t<_T1>> _Right) noexcept
 		{
-			return _pixel_t<std::remove_reference_t<_T1>>(_Left) |= _Right;
+			return _Pixel<std::remove_reference_t<_T1>>(_Left) |= _Right;
 		}
 
 		template <typename _T1, typename _T2>
-		_pixel_t<std::remove_reference_t<_T1>> operator ^ (
-			_pixel_t<_T1> const& _Left,
+		_Pixel<std::remove_reference_t<_T1>> operator ^ (
+			_Pixel<_T1> const& _Left,
 			std::remove_reference_t<std::remove_pointer_t<_T1>> _Right) noexcept
 		{
-			return _pixel_t<std::remove_reference_t<_T1>>(_Left) ^= _Right;
+			return _Pixel<std::remove_reference_t<_T1>>(_Left) ^= _Right;
 		}
 
 		template <typename _T1, typename _T2>
-		_pixel_t<std::remove_reference_t<_T1>> operator & (
+		_Pixel<std::remove_reference_t<_T1>> operator & (
 			std::remove_reference_t<std::remove_pointer_t<_T1>> _Left,
-			_pixel_t<_T1> const& _Right) noexcept
+			_Pixel<_T1> const& _Right) noexcept
 		{
-			return _pixel_t<std::remove_reference_t<_T1>>(_Right) &= _Left;
+			return _Pixel<std::remove_reference_t<_T1>>(_Right) &= _Left;
 		}
 
 		template <typename _T1, typename _T2>
-		_pixel_t<std::remove_reference_t<_T1>> operator | (
+		_Pixel<std::remove_reference_t<_T1>> operator | (
 			std::remove_reference_t<std::remove_pointer_t<_T1>> _Left,
-			_pixel_t<_T1> const& _Right) noexcept
+			_Pixel<_T1> const& _Right) noexcept
 		{
-			return _pixel_t<std::remove_reference_t<_T1>>(_Right) |= _Left;
+			return _Pixel<std::remove_reference_t<_T1>>(_Right) |= _Left;
 		}
 
 		template <typename _T1, typename _T2>
-		_pixel_t<std::remove_reference_t<_T1>> operator ^ (
+		_Pixel<std::remove_reference_t<_T1>> operator ^ (
 			std::remove_reference_t<std::remove_pointer_t<_T1>> _Left,
-			_pixel_t<_T1> const& _Right) noexcept
+			_Pixel<_T1> const& _Right) noexcept
 		{
-			return _pixel_t<std::remove_reference_t<_T1>>(_Right) ^= _Left;
+			return _Pixel<std::remove_reference_t<_T1>>(_Right) ^= _Left;
 		}
 
 		template <typename _T1, typename _T2>
-		bool operator == (_pixel_base_t<_T1> const& _Left, _pixel_base_t<_T2> const& _Right) noexcept
+		bool operator == (_PixelBase<_T1> const& _Left, _PixelBase<_T2> const& _Right) noexcept
 		{
 			return _Left._val == _Right._val;
 		}
 
 		template <typename _T1, typename _T2>
-		bool operator != (_pixel_base_t<_T1> const& _Left, _pixel_base_t<_T2> const& _Right) noexcept
+		bool operator != (_PixelBase<_T1> const& _Left, _PixelBase<_T2> const& _Right) noexcept
 		{
 			return !(_Left == _Right);
 		}
 
 		template <typename _T1, typename _T2>
-		bool operator <= (_pixel_base_t<_T1> const& _Left, _pixel_base_t<_T2> const& _Right) noexcept
+		bool operator <= (_PixelBase<_T1> const& _Left, _PixelBase<_T2> const& _Right) noexcept
 		{
 			return !(_Right < _Left);
 		}
 
 		template <typename _T1, typename _T2>
-		bool operator >= (_pixel_base_t<_T1> const& _Left, _pixel_base_t<_T2> const& _Right) noexcept
+		bool operator >= (_PixelBase<_T1> const& _Left, _PixelBase<_T2> const& _Right) noexcept
 		{
 			return !(_Left < _Right)
 		}
 
 		template <typename _T1, typename _T2>
-		bool operator < (_pixel_base_t<_T1> const& _Left, _pixel_base_t<_T2> const& _Right) noexcept
+		bool operator < (_PixelBase<_T1> const& _Left, _PixelBase<_T2> const& _Right) noexcept
 		{
 			return _Left._val < _Right._val;
 		}
 
 		template <typename _T1, typename _T2>
-		bool operator >(_pixel_base_t<_T1> const& _Left, _pixel_base_t<_T2> const& _Right) noexcept
+		bool operator >(_PixelBase<_T1> const& _Left, _PixelBase<_T2> const& _Right) noexcept
 		{
 			return _Right < _Left;
 		}
 
 		template <typename _T1, typename _T2, typename _Fn2>
-		void _Transform(_pixel_base_t<_T1>& _Val1, _pixel_base_t<_T2> const& _Val2, _Fn2 _Func) noexcept
+		void _Transform(_PixelBase<_T1>& _Val1, _PixelBase<_T2> const& _Val2, _Fn2 _Func) noexcept
 		{
 			const unsigned int chnls = channels(_Val1._fmt);
 			const unsigned int chnlbits = bpp(_Val1._fmt) / chnls;
@@ -373,7 +373,7 @@ namespace libimg
 		}
 
 		template <typename _T1, typename _T2, typename _Fn2>
-		void _TransformScalar(_pixel_base_t<_T1>& _Val1, _T2 const& _Val2, _Fn2 _Func) noexcept
+		void _TransformScalar(_PixelBase<_T1>& _Val1, _T2 const& _Val2, _Fn2 _Func) noexcept
 		{
 			const unsigned int chnls = channels(_Val1._fmt);
 			const unsigned int chnlbits = bpp(_Val1._fmt) / chnls;

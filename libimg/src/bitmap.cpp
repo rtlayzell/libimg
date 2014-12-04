@@ -4,6 +4,7 @@
 
 #include "bitmap.hpp"
 #include "bitmap_iterator.hpp"
+#include "pixel_format.hpp"
 
 #include "impl\bitmap_impl.hpp"
 #include "impl\bmp_bitmap_impl.hpp"
@@ -32,13 +33,13 @@ namespace libimg
 	{
 	}
 
-	bitmap::bitmap(std::size_t _Width, std::size_t _Height, pixel_format _Fmt)
+	bitmap::bitmap(std::size_t _Width, std::size_t _Height, pixel_format _Fmt = pixel_format::rgba)
 		: bitmap::bitmap(_Width, _Height, 0xFF000000, _Fmt)
 	{
 
 	}
 
-	bitmap::bitmap(std::size_t _Width, std::size_t _Height, bitmap::value_type _Color, pixel_format _Fmt)
+	bitmap::bitmap(std::size_t _Width, std::size_t _Height, bitmap::value_type _Color, pixel_format _Fmt = pixel_format::rgba)
 		: _pimpl(std::make_shared<bitmap_impl::bmp>()) // defaults to .bmp file.
 	{
 		if (this->_pimpl) 

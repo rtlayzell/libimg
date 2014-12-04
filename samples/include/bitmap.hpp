@@ -13,23 +13,13 @@
 #include <string>
 #include <memory>
 
+#include "bitmap_io.hpp"
 #include "bitmap_iterator.hpp"
 #include "pixel_format.hpp"
 
 
 namespace libimg
 {
-	namespace io
-	{
-		// forward declare ostream manipulators for writing
-		// the various types of image formats supported by libimg.
-
-		std::ostream& bmp(std::ostream& _Os);
-		std::ostream& png(std::ostream& _Os);
-		std::ostream& jpg(std::ostream& _Os);
-		std::ostream& tif(std::ostream& _Os);
-	}
-
 	class bitmap
 	{
 	private:
@@ -37,6 +27,7 @@ namespace libimg
 		std::shared_ptr<bitmap_impl> _pimpl;
 
 		static std::shared_ptr<bitmap::bitmap_impl> _CreateBitmapImpl(std::string _Path);
+		static std::shared_ptr<bitmap::bitmap_impl> _CreateClone(); /* stub */
 
 	public:
 		typedef unsigned int value_type;
@@ -47,10 +38,10 @@ namespace libimg
 		typedef std::size_t size_type;
 		typedef std::ptrdiff_t difference_type;
 
-		typedef detail::_bitmap_iterator iterator;
-		typedef detail::_bitmap_iterator const_iterator;
-		typedef std::reverse_iterator<detail::_bitmap_iterator> reverse_iterator;
-		typedef std::reverse_iterator<detail::_bitmap_iterator> const_reverse_iterator;
+		typedef detail::_BitmapIterator iterator;
+		typedef detail::_BitmapIterator const_iterator;
+		typedef std::reverse_iterator<detail::_BitmapIterator> reverse_iterator;
+		typedef std::reverse_iterator<detail::_BitmapIterator> const_reverse_iterator;
 		
 		/* \brief Constructs an empty bitmap. */
 		bitmap() = default;
@@ -59,8 +50,8 @@ namespace libimg
 
 		explicit bitmap(std::string);
 		explicit bitmap(std::istream&);
-		bitmap(std::size_t _Width, std::size_t _Height, pixel_format = pixel_format::bpp24);
-		bitmap(std::size_t _Width, std::size_t _Height, value_type _Color, pixel_format = pixel_format::bpp24);
+		bitmap(std::size_t _Width, std::size_t _Height, pixel_format);
+		bitmap(std::size_t _Width, std::size_t _Height, value_type _Color, pixel_format);
 
 		/* \brief Returns an iterator to the start of the row specified. */
 		iterator operator [](std::size_t) noexcept;
@@ -137,11 +128,22 @@ namespace libimg
 		/* \brief Returns a const iterator to the end of the bitmap pixels. */
 		const_iterator cend() const noexcept;
 
+		/* \brief Returns a reverse iterator to the beginning of the bitmap pixels. */
 		reverse_iterator rbegin() noexcept;
+
+		/* \brief Returns a reverse iterator to the end of the bitmap pixels. */
 		reverse_iterator rend() noexcept;
+
+		/* \brief Returns a const reverse iterator to the beginning of the bitmap pixels. */
 		const_reverse_iterator rbegin() const noexcept;
+
+		/* \brief Returns a const reverse iterator to the end of the bitmap pixels. */
 		const_reverse_iterator rend() const noexcept;
+
+		/* \brief Returns a const reverse iterator to the beginning of the bitmap pixels. */
 		const_reverse_iterator crbegin() const noexcept;
+
+		/* \brief Returns a const reverse iterator to the end of the bitmap pixels. */
 		const_reverse_iterator crend() const noexcept;
 
 		/* \brief Swaps the bitmap contents with the contents of the bitmap specified. */
@@ -159,20 +161,35 @@ namespace libimg
 		/* \brief Writes the bitmap data to the output stream specified. */
 		void write(std::ostream&);
 
+		/* \brief Writes the bitmap data to the output stream specified. */
 		friend std::ostream& operator << (std::ostream&, bitmap const&);
+		
+		/* \brief Reads the bitmap data from the input stream specified. */
 		friend std::istream& operator >> (std::istream&, bitmap&);
 	};
 
+	/* \brief Determines if one bitmap is equal to another, true if they are equal, false otherwise. */
 	bool operator == (bitmap const&, bitmap const&);
+
+	/* \brief Determines if one bitmap is not equal to another, true if they are not equal, false otherwise. */
 	bool operator != (bitmap const&, bitmap const&);
 
+	/* \brief Determines if one bitmap is uninitialized, true if it is uninitialized, false otherwise. */
 	bool operator == (bitmap const&, ::std::nullptr_t const);
+
+	/* \brief Determines if one bitmap is not uninitialized, true if it is not uninitialized, false otherwise. */
 	bool operator != (bitmap const&, ::std::nullptr_t const);
 
+	/* \brief Determines if one bitmap is uninitialized, true if it is uninitialized, false otherwise. */
 	bool operator == (::std::nullptr_t const, bitmap const&);
+
+	/* \brief Determines if one bitmap is not uninitialized, true if it is not uninitialized, false otherwise. */
 	bool operator != (::std::nullptr_t const, bitmap const&);
 
+	/* \brief Writes the bitmap data to the output stream specified. */
 	std::ostream& operator << (std::ostream& _Os, bitmap const&);
+	
+	/* \brief Reads the bitmap data from the input stream specified. */
 	std::istream& operator >> (std::istream& _Is, bitmap&);
 }
 

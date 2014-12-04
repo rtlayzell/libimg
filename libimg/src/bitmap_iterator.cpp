@@ -10,119 +10,119 @@ namespace libimg
 	namespace detail
 	{
 
-		_bitmap_iterator::_bitmap_iterator(unsigned char* _DataPtr, pixel_format _Fmt)
-			: _dataPtr(_DataPtr), _bmpFmt(_Fmt)
+		_BitmapIterator::_BitmapIterator(unsigned char* _DataPtr, pixel_format _Fmt)
+			: _dataPtr(_DataPtr), _pixelFmt(_Fmt)
 		{
 		}
 
-		_bitmap_iterator::reference _bitmap_iterator::operator [](std::size_t _Offset) noexcept
+		_BitmapIterator::reference _BitmapIterator::operator [](std::size_t _Offset) noexcept
 		{
 			return reference(reinterpret_cast<unsigned int&>(
-				*(this->_dataPtr + _Offset * bpp(this->_bmpFmt) / 8)), this->_bmpFmt);
+				*(this->_dataPtr + _Offset * bpp(this->_pixelFmt) / 8)), this->_pixelFmt);
 		}
 
-		_bitmap_iterator::const_reference _bitmap_iterator::operator [](std::size_t _Offset) const noexcept
+		_BitmapIterator::const_reference _BitmapIterator::operator [](std::size_t _Offset) const noexcept
 		{
 			return const_reference(reinterpret_cast<unsigned int&>(
-				*(this->_dataPtr + _Offset * bpp(this->_bmpFmt) / 8)), this->_bmpFmt);
+				*(this->_dataPtr + _Offset * bpp(this->_pixelFmt) / 8)), this->_pixelFmt);
 		}
 
-		_bitmap_iterator::reference _bitmap_iterator::operator *() noexcept
+		_BitmapIterator::reference _BitmapIterator::operator *() noexcept
 		{
 			return this->operator[](0);
 		}
 
-		_bitmap_iterator::const_reference _bitmap_iterator::operator *() const noexcept
+		_BitmapIterator::const_reference _BitmapIterator::operator *() const noexcept
 		{
 			return this->operator[](0);
 		}
 
-		_bitmap_iterator::_Myt& _bitmap_iterator::operator ++ (int) noexcept
+		_BitmapIterator::_Myt& _BitmapIterator::operator ++ (int) noexcept
 		{
 			return *this += 1;
 		}
 
-		_bitmap_iterator::_Myt& _bitmap_iterator::operator -- (int) noexcept
+		_BitmapIterator::_Myt& _BitmapIterator::operator -- (int) noexcept
 		{
 			return *this -= 1;
 		}
 
-		_bitmap_iterator::_Myt _bitmap_iterator::operator ++ () noexcept
+		_BitmapIterator::_Myt _BitmapIterator::operator ++ () noexcept
 		{
 			auto _tmp = *this; *this += 1;
 			return _tmp;
 		}
 
-		_bitmap_iterator::_Myt _bitmap_iterator::operator -- () noexcept
+		_BitmapIterator::_Myt _BitmapIterator::operator -- () noexcept
 		{
 			auto _tmp = *this; *this -= 1;
 			return _tmp;
 		}
 
-		_bitmap_iterator::_Myt& _bitmap_iterator::operator += (difference_type _Offs) noexcept
+		_BitmapIterator::_Myt& _BitmapIterator::operator += (difference_type _Offs) noexcept
 		{
-			this->_dataPtr += _Offs * bpp(this->_bmpFmt) / 8;
+			this->_dataPtr += _Offs * bpp(this->_pixelFmt) / 8;
 			return *this;
 		}
 
-		_bitmap_iterator::_Myt& _bitmap_iterator::operator -= (difference_type _Offs) noexcept
+		_BitmapIterator::_Myt& _BitmapIterator::operator -= (difference_type _Offs) noexcept
 		{
-			this->_dataPtr -= _Offs * bpp(this->_bmpFmt) / 8;
+			this->_dataPtr -= _Offs * bpp(this->_pixelFmt) / 8;
 			return *this;
 		}
 
-		bool operator == (_bitmap_iterator const& _Left, _bitmap_iterator const& _Right) noexcept
+		bool operator == (_BitmapIterator const& _Left, _BitmapIterator const& _Right) noexcept
 		{
 			return _Left._dataPtr == _Right._dataPtr
-				&& _Left._bmpFmt == _Right._bmpFmt;
+				&& _Left._pixelFmt == _Right._pixelFmt;
 		}
 
-		bool operator != (_bitmap_iterator const& _Left, _bitmap_iterator const& _Right) noexcept
+		bool operator != (_BitmapIterator const& _Left, _BitmapIterator const& _Right) noexcept
 		{
 			return !(_Left == _Right);
 		}
 
-		bool operator <= (_bitmap_iterator const& _Left, _bitmap_iterator const& _Right) noexcept
+		bool operator <= (_BitmapIterator const& _Left, _BitmapIterator const& _Right) noexcept
 		{
 			return (_Right < _Left);
 		}
 
-		bool operator >= (_bitmap_iterator const& _Left, _bitmap_iterator const& _Right) noexcept
+		bool operator >= (_BitmapIterator const& _Left, _BitmapIterator const& _Right) noexcept
 		{
 			return !(_Left < _Right);
 		}
 
-		bool operator < (_bitmap_iterator const& _Left, _bitmap_iterator const& _Right) noexcept
+		bool operator < (_BitmapIterator const& _Left, _BitmapIterator const& _Right) noexcept
 		{
 			return _Left._dataPtr < _Right._dataPtr;
 		}
 
-		bool operator >(_bitmap_iterator const& _Left, _bitmap_iterator const& _Right) noexcept
+		bool operator >(_BitmapIterator const& _Left, _BitmapIterator const& _Right) noexcept
 		{
 			return !(_Left <= _Right);
 		}
 
-		std::ptrdiff_t operator - (_bitmap_iterator const& _Left, _bitmap_iterator const& _Right) noexcept
+		std::ptrdiff_t operator - (_BitmapIterator const& _Left, _BitmapIterator const& _Right) noexcept
 		{
-			unsigned int bits = bpp(_Left._bmpFmt);
+			unsigned int bits = bpp(_Left._pixelFmt);
 
-			assert(bits == bpp(_Right._bmpFmt));
+			assert(bits == bpp(_Right._pixelFmt));
 			return (_Left._dataPtr - _Right._dataPtr) / (bits / 8); // byte-distance / bytes-per-pixel
 		}
 
-		_bitmap_iterator operator + (_bitmap_iterator const& _Left, std::ptrdiff_t _Right) noexcept
+		_BitmapIterator operator + (_BitmapIterator const& _Left, std::ptrdiff_t _Right) noexcept
 		{
-			return _bitmap_iterator(_Left) += _Right;
+			return _BitmapIterator(_Left) += _Right;
 		}
 
-		_bitmap_iterator operator - (_bitmap_iterator const& _Left, std::ptrdiff_t _Right) noexcept
+		_BitmapIterator operator - (_BitmapIterator const& _Left, std::ptrdiff_t _Right) noexcept
 		{
-			return _bitmap_iterator(_Left) -= _Right;
+			return _BitmapIterator(_Left) -= _Right;
 		}
 
-		_bitmap_iterator operator + (std::ptrdiff_t _Left, _bitmap_iterator const& _Right) noexcept
+		_BitmapIterator operator + (std::ptrdiff_t _Left, _BitmapIterator const& _Right) noexcept
 		{
-			return _bitmap_iterator(_Right) += _Left;
+			return _BitmapIterator(_Right) += _Left;
 		}
 	}
 }
