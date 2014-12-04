@@ -17,24 +17,22 @@ namespace libimg
 
 		_BitmapIterator::reference _BitmapIterator::operator [](std::size_t _Offset) noexcept
 		{
-			return reference(reinterpret_cast<unsigned int&>(
-				*(this->_dataPtr + _Offset * bpp(this->_pixelFmt) / 8)), this->_pixelFmt);
+			return *(operator+(*this, _Offset));
 		}
 
 		_BitmapIterator::const_reference _BitmapIterator::operator [](std::size_t _Offset) const noexcept
 		{
-			return const_reference(reinterpret_cast<unsigned int&>(
-				*(this->_dataPtr + _Offset * bpp(this->_pixelFmt) / 8)), this->_pixelFmt);
+			return *(operator+(*this, _Offset));
 		}
 
 		_BitmapIterator::reference _BitmapIterator::operator *() noexcept
 		{
-			return this->operator[](0);
+			return reinterpret_cast<pixel_t&>(*this);
 		}
 
 		_BitmapIterator::const_reference _BitmapIterator::operator *() const noexcept
 		{
-			return this->operator[](0);
+			return reinterpret_cast<pixel_t const&>(*this);
 		}
 
 		_BitmapIterator::_Myt& _BitmapIterator::operator ++ (int) noexcept

@@ -15,6 +15,9 @@ namespace libimg
 		struct _BitmapIterator
 		{
 		private:
+			unsigned char _unused = 1;	// used to enable casting iterators to pixels.
+										// internal mechanism that operating on pixels of various formats from one interface.
+
 			unsigned char* _dataPtr;
 
 			pixel_format _pixelFmt;	 // describes the number of bits per pixel so we can adjust the pointer appropriately.
@@ -27,10 +30,10 @@ namespace libimg
 		public:
 			typedef std::random_access_iterator_tag iterator_category;
 			typedef pixel_t value_type;
-			typedef pixelptr_t pointer;
-			typedef pixelref_t reference;
-			typedef pixelptr_t const const_pointer;
-			typedef pixelref_t const const_reference;
+			typedef pixel_t* pointer;
+			typedef pixel_t& reference;
+			typedef pixel_t const* const_pointer;
+			typedef pixel_t const& const_reference;
 			typedef std::ptrdiff_t difference_type;
 
 			_BitmapIterator() = default;
