@@ -50,6 +50,9 @@
     <ClInclude Include="include\pixel_format.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\bitmap_io.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\bitmap.cpp">
@@ -73,7 +76,7 @@
     <ClCompile Include="src\pixel_format.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\bitmap_ios.cpp">
+    <ClCompile Include="src\bitmap_io.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -103,6 +103,7 @@ xcopy "$(ProjectDir)include\pixel*.hpp" "$(OutDir)include\" /q /d /y</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\bitmap.hpp" />
+    <ClInclude Include="include\bitmap_io.hpp" />
     <ClInclude Include="include\impl\bitmap_impl.hpp" />
     <ClInclude Include="include\impl\bmp_bitmap_impl.hpp" />
     <ClInclude Include="include\impl\jpg_bitmap_impl.hpp" />
@@ -119,7 +120,7 @@ xcopy "$(ProjectDir)include\pixel*.hpp" "$(OutDir)include\" /q /d /y</Command>
     <ClCompile Include="src\bitmap.cpp" />
     <ClInclude Include="include\bitmap_iterator.hpp" />
     <ClCompile Include="src\bitmap_iterator.cpp" />
-    <ClCompile Include="src\bitmap_ios.cpp" />
+    <ClCompile Include="src\bitmap_io.cpp" />
     <ClCompile Include="src\libbmp\bmp.c">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </PrecompiledHeaderFile>
